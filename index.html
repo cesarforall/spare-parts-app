@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Spare Parts App</title>
+        <style>
+            html * {
+                font-family: sans-serif;
+            }
+
+            body {
+                margin: 0;
+            }
+
+            .header {
+                box-shadow: 0px -1px 6px 0px black;
+            }
+
+            h1 {
+                margin: 0;
+            }
+
+            h3.card__title {
+                display: inline-block;
+                width: 100%;
+                height: 100%;
+            }
+
+            .app {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .models-container {
+                display: flex;
+                gap: 14px;
+            }
+
+            .card {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                /* place-items: center; */
+                width: 240px;
+                height: 320px;
+                /* border: 1px solid black; */
+                border-radius: 14px;
+                box-shadow: 0 0 3px 0 black;
+                /* object-fit: fit; */
+                text-align: center;
+            }
+
+            .card.a77 {
+                background-image: url('./pax-a77.jpg');
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-position: center;
+            }
+
+            .card.a920pro {
+                background-image: url('./pax-a920pro.jpg');
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-position: center;
+            }
+
+            .card__img {
+                width: 100%;
+                height: fit-content;
+            }
+
+            .card__title {}
+        </style>
+    </head>
+    <body>
+        <header class="header">
+            <h1>Spare Parts App</h1>
+            <div class="search-engine">
+                <select name="" id="">
+                    <option value="maker">FABRICANTE</option>
+                    <option value="pax">PAX</option>
+                    <option value="castles">CASTLES</option>
+                </select>
+                <select name="" id="">
+                    <option value="modelo">MODELO</option>
+                    <option value="a77">A77</option>
+                    <option value="a920pro">A920PRO</option>
+                    <option value="satur1000">SATURN1000</option>
+                </select>
+                <input type="text" placeholder="ejemplo: a920pro tapa">
+            </div>
+        </header>
+        <main class="app">
+            <section class="maker-section">
+                <h2>PAX</h2>
+                <div class="models-container">
+                    <article class="card a77">
+                        <a href="">
+                            <h3 class="card__title">A77</h3>
+                        </a>
+                    </article>
+                    <article class="card a920pro">
+                        <a href="">
+                            <h3 class="card__title">A920PRO</h3>
+                        </a>
+                    </article>
+                </div>
+            </section>
+            <section class="maker-section">
+                <h2>FABRICANTE</h2>
+                <div class="models-container">
+                    <article class="card">
+                        <a href=""><img class="card__img" src="./images.png" alt=""></a>
+                        <h3 class="card__title">MODELO</h3>
+                    </article>
+                    <article class="card">
+                        <a href=""><img class="card__img" src="./images.png" alt=""></a>
+                        <h3 class="card__title">MODELO</h3>
+                    </article>
+                    <article class="card">
+                        <a href=""><img class="card__img" src="./images.png" alt=""></a>
+                        <h3 class="card__title">MODELO</h3>
+                    </article>
+                    <article class="card">
+                        <a href=""><img class="card__img" src="./images.png" alt=""></a>
+                        <h3 class="card__title">MODELO</h3>
+                    </article>
+                    <article class="card">
+                        <a href=""><img class="card__img" src="./images.png" alt=""></a>
+                        <h3 class="card__title">MODELO</h3>
+                    </article>
+                </div>
+            </section>
+        </main>
+        <footer class="footer"></footer>
+    </body>
+</html>
