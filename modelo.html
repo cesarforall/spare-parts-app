@@ -6,16 +6,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Spare Parts App</title>
         <style>
-            html {
-                box-sizing: border-box;
-            }
-
-            *,
-            *:before,
-            *:after {
-                box-sizing: inherit;
-            }
-
             html * {
                 font-family: sans-serif;
             }
@@ -24,7 +14,14 @@
                 margin: 0;
             }
 
+            .wrapper {
+                min-width: 640px;
+                max-width: 1024px;
+                margin: 0 auto;
+            }
+
             .header {
+                width: 100%;
                 box-shadow: 0px -1px 6px 0px black;
             }
 
@@ -54,13 +51,12 @@
                 flex-direction: column;
                 /* place-items: center; */
                 width: 240px;
-                /* height: 320px; */
-                padding: 14px;
                 /* border: 1px solid black; */
                 border-radius: 14px;
                 box-shadow: 0 0 3px 0 black;
                 /* object-fit: fit; */
                 text-align: center;
+                padding: 10px;
             }
 
             .card.a77 {
@@ -80,23 +76,27 @@
             .card__img {
                 width: 100%;
                 height: fit-content;
-                border-radius: 10px;
             }
+
             table {
                 margin-top: 20px;
             }
+
             td {
                 font-size: 12px;
                 text-align: left;
             }
+
             table tr td:first-child {
                 font-weight: bold;
             }
         </style>
     </head>
-    <body>
+    <body class="wrapper">
         <header class="header">
-            <a href="./index.html"><h1>Spare Parts App</h1></a>
+            <a href="./index.html">
+                <h1>Spare Parts App</h1>
+            </a>
             <div class="search-engine">
                 <select name="" id="">
                     <option value="maker">FABRICANTE</option>
@@ -158,8 +158,41 @@
                             </tr>
                             <tr>
                                 <td>Description:</td>
-                                <td>V07-Single sim card
-                                </td>
+                                <td>V07-Single sim card </td>
+                            </tr>
+                        </table>
+                    </article>
+                    <article class="card">
+                        <a href=""><img class="card__img" src="./03124542124.jpg" alt=""></a>
+                        <table>
+                            <tr>
+                                <td>Part Number:</td>
+                                <td>02124542124</td>
+                            </tr>
+                            <tr>
+                                <td>Name:</td>
+                                <td>Main board</td>
+                            </tr>
+                            <tr>
+                                <td>Description:</td>
+                                <td>V07-Single sim card </td>
+                            </tr>
+                        </table>
+                    </article>
+                    <article class="card">
+                        <a href=""><img class="card__img" src="./03124542124.jpg" alt=""></a>
+                        <table>
+                            <tr>
+                                <td>Part Number:</td>
+                                <td>02124542124</td>
+                            </tr>
+                            <tr>
+                                <td>Name:</td>
+                                <td>Main board</td>
+                            </tr>
+                            <tr>
+                                <td>Description:</td>
+                                <td>V07-Single sim card </td>
                             </tr>
                         </table>
                     </article>
