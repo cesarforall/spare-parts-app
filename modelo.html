@@ -6,6 +6,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Spare Parts App</title>
         <style>
+            html {
+                box-sizing: border-box;
+            }
+
+            *,
+            *:before,
+            *:after {
+                box-sizing: inherit;
+            }
+
             html * {
                 font-family: sans-serif;
             }
@@ -44,7 +54,8 @@
                 flex-direction: column;
                 /* place-items: center; */
                 width: 240px;
-                height: 320px;
+                /* height: 320px; */
+                padding: 14px;
                 /* border: 1px solid black; */
                 border-radius: 14px;
                 box-shadow: 0 0 3px 0 black;
@@ -69,14 +80,23 @@
             .card__img {
                 width: 100%;
                 height: fit-content;
+                border-radius: 10px;
             }
-
-            .card__title {}
+            table {
+                margin-top: 20px;
+            }
+            td {
+                font-size: 12px;
+                text-align: left;
+            }
+            table tr td:first-child {
+                font-weight: bold;
+            }
         </style>
     </head>
     <body>
         <header class="header">
-            <h1>Spare Parts App</h1>
+            <a href="./index.html"><h1>Spare Parts App</h1></a>
             <div class="search-engine">
                 <select name="" id="">
                     <option value="maker">FABRICANTE</option>
@@ -94,42 +114,54 @@
         </header>
         <main class="app">
             <section class="maker-section">
-                <h2>PAX</h2>
-                <div class="models-container">
-                    <article class="card a77">
-                        <a href="./modelo.html">
-                            <h3 class="card__title">A77</h3>
-                        </a>
-                    </article>
-                    <article class="card a920pro">
-                        <a href="./modelo.html">
-                            <h3 class="card__title">A920PRO</h3>
-                        </a>
-                    </article>
+                <div>
+                    <h2 style="display: inline-block; ">PAX A920Pro</h2>
+                    <select name="" id="">
+                        <option value="modelo">Part Number</option>
+                        <option value="modelo">-0AW-RD5-02EU</option>
+                    </select>
+                    <select name="" id="">
+                        <option value="modelo">Spare parts</option>
+                        <option value="modelo">battery cover</option>
+                        <option value="modelo">printer cover</option>
+                    </select>
+                    <input type="text" placeholder="ejemplo: tapa papel">
                 </div>
-            </section>
-            <section class="maker-section">
-                <h2>FABRICANTE</h2>
                 <div class="models-container">
                     <article class="card">
-                        <a href="./modelo.html"><img class="card__img" src="./images.png" alt=""></a>
-                        <h3 class="card__title">MODELO</h3>
+                        <a href=""><img class="card__img" src="./02124542124.jpg" alt=""></a>
+                        <table>
+                            <tr>
+                                <td>Part Number:</td>
+                                <td>02124542124</td>
+                            </tr>
+                            <tr>
+                                <td>Name:</td>
+                                <td>Battery cover</td>
+                            </tr>
+                            <tr>
+                                <td>Description:</td>
+                                <td>Battery cover (Silver)</td>
+                            </tr>
+                        </table>
                     </article>
                     <article class="card">
-                        <a href="./modelo.html"><img class="card__img" src="./images.png" alt=""></a>
-                        <h3 class="card__title">MODELO</h3>
-                    </article>
-                    <article class="card">
-                        <a href="./modelo.html"><img class="card__img" src="./images.png" alt=""></a>
-                        <h3 class="card__title">MODELO</h3>
-                    </article>
-                    <article class="card">
-                        <a href="./modelo.html"><img class="card__img" src="./images.png" alt=""></a>
-                        <h3 class="card__title">MODELO</h3>
-                    </article>
-                    <article class="card">
-                        <a href="./modelo.html"><img class="card__img" src="./images.png" alt=""></a>
-                        <h3 class="card__title">MODELO</h3>
+                        <a href=""><img class="card__img" src="./03124542124.jpg" alt=""></a>
+                        <table>
+                            <tr>
+                                <td>Part Number:</td>
+                                <td>02124542124</td>
+                            </tr>
+                            <tr>
+                                <td>Name:</td>
+                                <td>Main board</td>
+                            </tr>
+                            <tr>
+                                <td>Description:</td>
+                                <td>V07-Single sim card
+                                </td>
+                            </tr>
+                        </table>
                     </article>
                 </div>
             </section>
