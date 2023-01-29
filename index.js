@@ -1,6 +1,12 @@
 const sparePartsContainer = document.querySelector('.spare-parts-container');
+const modelListElement = document.querySelector('.model-list');
 
-function createSparePartCard(partNumber, partName, repairComponent, Remark) {
+modelListElement.addEventListener('click', e => {
+	const optionValue = modelListElement.options[modelListElement.selectedIndex].text;
+	findSpareParts(optionValue);
+});
+
+function createSparePartCard(partNumber, partName, repairComponent, remark) {
 	const articleElement = document.createElement('article');
 	articleElement.classList.add('card');
 
@@ -30,7 +36,7 @@ function createSparePartCard(partNumber, partName, repairComponent, Remark) {
     </tr>
     <tr>
         <td class="left">Remark</td>
-        <td class="rigth">${Remark}</td>
+        <td class="rigth">${remark}</td>
     </tr>
     </tbody>
     `;
@@ -39,4 +45,40 @@ function createSparePartCard(partNumber, partName, repairComponent, Remark) {
 	articleElement.append(imgContainerElement);
 	articleElement.append(tableElement);
 	sparePartsContainer.append(articleElement);
+}
+
+const modelNames = modelData.map(model => model.name.toUpperCase());
+
+function createOption(modelNames) {
+	modelNames.forEach(item => {
+		const optionElement = document.createElement('option');
+		optionElement.value = item.toLowerCase;
+		optionElement.innerText = item;
+		modelListElement.append(optionElement);
+	});
+}
+
+createOption(modelNames);
+
+function findSpareParts(model) {
+	const foundModel = modelData.find(item => item.name == model);
+	const sparePartsArray = foundModel.spareParts;
+	const spareParts = [];
+	sparePartsArray.forEach(item => {
+		const found = sparePartsData.find(sp => {
+			return sp.id == item;
+		});
+		spareParts.push(found);
+	});
+	displaySpareParts(spareParts);
+}
+function displaySpareParts(data) {
+	sparePartsContainer.innerHTML = '';
+	data.forEach(item => {
+		const partNumber = item['Part number'] || '';
+		const partName = item['Parts name'] || '';
+		const repairComponent = item['Repair component'] || '';
+		const remark = item['Remark'] || '';
+		createSparePartCard(partNumber, partName, repairComponent, remark);
+	});
 }
