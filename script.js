@@ -19,7 +19,7 @@ async function handleFileAsync(e) {
 	const theSheet = wb.Sheets[theSheetName];
 
 	// get objet models
-	const models = XLSX.utils.sheet_to_json(theSheet, { header: 1, range: 'C3:AE3' })[0];
+	const models = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: 'C3:AE3' })[0];
 	console.log(models);
 
 	// get spare parts
@@ -30,13 +30,36 @@ async function handleFileAsync(e) {
 	// console.log(sparePartsLastColums);
 
 	const fullSpareParts = [...spareParts];
+	console.log(fullSpareParts);
 
 	for (const item of sparePartsLastColums) {
 		const rowNumber = item['__rowNum__'];
 		const index = fullSpareParts.findIndex(item => {
 			return item['__rowNum__'] == rowNumber;
 		});
-		fullSpareParts[index] = { ...fullSpareParts[index], ...item };
+		fullSpareParts[index] = { ...fullSpareParts[index], ...item, id: item['__rowNum__'] };
 	}
-	console.log(fullSpareParts);
+	// console.log(fullSpareParts);
+
+	// get full componets for a model
+	const modelSpareParts = {};
+
+	const modelComponentList = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: 'C4:C463' });
+	console.log(modelComponentList);
+
+	function getComponentList(modelId) {
+		const theRange = `${modelId}4:${modelId}463`;
+		const modelComponentList = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: theRange });
+		let componentList = [];
+		for (const component of modelComponentList) {
+			componentList.push(component['__rowNum__']);
+		}
+		return componentList;
+	}
+	const componentC = getComponentList('C');
+	console.log(componentC);
 }
+// [
+// 	{ name: 'A920Pro...', id: 'Nombre de columna', spareParts: [] },
+// 	{ name: 'A920Pro...', id: 'Nombre de columna', spareParts: [] },
+// ];
