@@ -1,6 +1,28 @@
 const inputFileElement = document.getElementById('input-file');
 const tableElement = document.getElementById('table');
 inputFileElement.addEventListener('change', handleFileAsync, false);
+const buttonElement = document.getElementById('dowload-button');
+buttonElement.addEventListener('click', () => {
+	let newDate = new Date();
+	// lastDate.toString()
+	// console.log(lastDate)
+	let data;
+	data = 'const modelsData=' + JSON.stringify(modelsData);
+	downloadToFile(data, 'data-versions' + '.js', 'text/plain');
+});
+let modelsData;
+let sparePartsData;
+
+const downloadToFile = (content, filename, contentType) => {
+	const a = document.createElement('a');
+	const file = new Blob([content], { type: contentType });
+
+	a.href = URL.createObjectURL(file);
+	a.download = filename;
+	a.click();
+
+	URL.revokeObjectURL(a.href);
+};
 
 async function handleFileAsync(e) {
 	/* get first file */
@@ -19,7 +41,15 @@ async function handleFileAsync(e) {
 	const theSheet = wb.Sheets[theSheetName];
 
 	// get objet models
-	const models = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: 'C3:AE3' })[0];
+	const rawModels = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: 'C3:AE3' })[0];
+	console.log(rawModels);
+
+	function getObjectModels(rawModels) {
+		return Object.entries(rawModels).map(([key, value]) => {
+			return { name: value, id: key };
+		});
+	}
+	const models = getObjectModels(rawModels);
 	console.log(models);
 
 	// get spare parts
@@ -58,8 +88,17 @@ async function handleFileAsync(e) {
 	}
 	const componentC = getComponentList('C');
 	console.log(componentC);
+
+	// Get full list with models and spareparts
+	const fullModelList = [...models];
+
+	for (const model of fullModelList) {
+		const componentList = getComponentList(model.id);
+		model.spareParts = componentList;
+	}
+
+	modelsData = [...fullModelList];
+	sparePartsData = [...fullSpareParts];
+	console.table(fullModelList);
+	console.table(fullModelList[10].spareParts);
 }
-// [
-// 	{ name: 'A920Pro...', id: 'Nombre de columna', spareParts: [] },
-// 	{ name: 'A920Pro...', id: 'Nombre de columna', spareParts: [] },
-// ];
