@@ -2,12 +2,13 @@ const sparePartsContainer = document.querySelector('.spare-parts-container');
 const versionModelListElement = document.querySelector('.version-model-list');
 const modelListElement = document.querySelector('.model-list');
 
-modelListElement.addEventListener('click', e => {
+modelListElement.addEventListener('change', e => {
 	const optionValue = modelListElement.options[modelListElement.selectedIndex].text;
 	addVersionModelList(optionValue);
+	sparePartsContainer.innerHTML = '';
 });
 
-versionModelListElement.addEventListener('click', e => {
+versionModelListElement.addEventListener('change', e => {
 	const optionValue = versionModelListElement.options[versionModelListElement.selectedIndex].text;
 	findSpareParts(optionValue);
 });
@@ -94,16 +95,24 @@ function findSpareParts(model) {
 			spareParts.push(found);
 		});
 		displaySpareParts(spareParts);
+	} else {
+		sparePartsContainer.innerHTML = '';
 	}
 }
 function displaySpareParts(data) {
+	const partsLengthElement = document.createElement('p');
+	const partsLength = data.length;
+
+	partsLengthElement.innerText = `${partsLength} repuestos compatibles`;
 	sparePartsContainer.innerHTML = '';
+	sparePartsContainer.append(partsLengthElement);
+
 	data.forEach(item => {
 		const partNumber = item['Part number'] || '';
 		const partName = item['Parts name'] || '';
 		const repairComponent = item['Repair component'] || '';
 		const remark = item['Remark'] || '';
-		createSparePartCard(partNumber, partName, repairComponent, remark);
+		createSparePartCard(partNumber, partName, repairComponent, remark, length);
 	});
 }
 
