@@ -10,6 +10,7 @@ modelListElement.addEventListener('change', e => {
 	addVersionModelList(optionValue);
 	partsLengthElement.innerText = ''
 	sparePartsContainer.innerHTML = '';
+	searchInput.value = '';
 });
 
 versionModelListElement.addEventListener('change', e => {
