@@ -34,7 +34,7 @@ function createSparePartCard(partNumber, partName, repairComponent, remark) {
 
 	const imgElement = document.createElement('img');
 	imgElement.classList.add('card-img');
-	imgElement.setAttribute('src', './img/tvp.png');
+	imgElement.setAttribute('src', `./data/spare-parts/${partNumber}.jpg` || './img/tvp.png');
 	imgElement.setAttribute('alt', 'spare part');
 
 	const tableElement = document.createElement('table');
