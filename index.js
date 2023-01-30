@@ -2,6 +2,11 @@ const sparePartsContainer = document.querySelector('.spare-parts-container');
 const versionModelListElement = document.querySelector('.version-model-list');
 const modelListElement = document.querySelector('.model-list');
 
+modelListElement.addEventListener('click', e => {
+	const optionValue = modelListElement.options[modelListElement.selectedIndex].text;
+	addVersionModelList(optionValue);
+});
+
 versionModelListElement.addEventListener('click', e => {
 	const optionValue = versionModelListElement.options[versionModelListElement.selectedIndex].text;
 	findSpareParts(optionValue);
@@ -50,7 +55,12 @@ function createSparePartCard(partNumber, partName, repairComponent, remark) {
 
 const versionModelNames = modelData.map(model => model.name.toUpperCase());
 
-function createOption(optionArray, node) {
+function createOption(optionArray, node, listName) {
+	node.innerText = '';
+	const optionElement = document.createElement('option');
+	optionElement.value = listName.toLowerCase();
+	optionElement.innerText = listName;
+	node.append(optionElement);
 	optionArray.forEach(item => {
 		const optionElement = document.createElement('option');
 		optionElement.value = item.toLowerCase;
@@ -59,7 +69,16 @@ function createOption(optionArray, node) {
 	});
 }
 
-createOption(versionModelNames, versionModelListElement);
+function addVersionModelList(option) {
+	const versionModelFound = [];
+	versionModelNames.forEach(item => {
+		if (item.startsWith(option + '-')) {
+			versionModelFound.push(item);
+		}
+		return versionModelFound;
+	});
+	createOption(versionModelFound, versionModelListElement, 'VERSIÓN');
+}
 
 function findSpareParts(model) {
 	if (model != 'VERSIÓN') {
@@ -98,4 +117,4 @@ function getModels(modelNames) {
 	return orderedModelNames;
 }
 const modelNames = getModels(versionModelNames);
-createOption(modelNames, modelListElement);
+createOption(modelNames, modelListElement, 'MODELO');
