@@ -1,5 +1,6 @@
 :root {
 	/* box-shadow: 0px 0px 8px rgba(89, 73, 30, 0.16); */
+	--c-zelenza: #342c6f
 }
 html {
 	box-sizing: border-box;
@@ -37,8 +38,12 @@ body {
 
 .header a {
 	text-decoration: none;
-	color: black;
-	font-size: 20px;
+	color: var(--c-zelenza);
+	font-weight: bold;
+	font-size: 24px;
+}
+.header a span {
+	color: #c705aa;
 }
 
 .search-parameters {
@@ -98,8 +103,8 @@ body {
 	width: 238px;
 	/* max-width: 320px; */
 	/* min-height: 350px; */
-	height: 380px;
-	padding: 15px;
+	height: 350px;
+	padding: 12px;
 	border-radius: 10px;
 	box-shadow: 0px 0px 8px rgba(89, 73, 30, 0.16);
 }
@@ -128,11 +133,16 @@ body {
 	margin-top: 20px;
 }
 .card-table td {
+	vertical-align: super;
+	height: 16px;
 	font-size: 11px;
-	word-break: break-all;
 }
 .card-table .left {
+	width: 32%;
 	font-weight: bold;
+}
+.card-table .right {
+	word-break: break-word;
 }
 
 /* Footer */

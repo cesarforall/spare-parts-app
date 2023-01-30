@@ -8,13 +8,13 @@ modelData.map(item => (item.name = item.name.toUpperCase()));
 modelListElement.addEventListener('change', e => {
 	const optionValue = modelListElement.options[modelListElement.selectedIndex].text;
 	addVersionModelList(optionValue);
-	searchInput.classList.add('inactive');
+	partsLengthElement.innerText = ''
 	sparePartsContainer.innerHTML = '';
 });
 
 versionModelListElement.addEventListener('change', e => {
 	const optionValue = versionModelListElement.options[versionModelListElement.selectedIndex].text;
-	searchInput.classList.remove('inactive');
+	searchInput.setAttribute('placeholder', 'buscar repuesto')
 	searchInput.value = '';
 	findSpareParts(optionValue);
 });
@@ -43,19 +43,19 @@ function createSparePartCard(partNumber, partName, repairComponent, remark) {
     <tbody>
     <tr>
         <td class="left">Part number</td>
-        <td class="rigth">${partNumber}</td>
+        <td class="right">${partNumber}</td>
     </tr>
     <tr>
         <td class="left">Part name</td>
-        <td class="rigth">${partName}</td>
+        <td class="right">${partName}</td>
     </tr>
     <tr>
         <td class="left">Repair component</td>
-        <td class="rigth">${repairComponent}</td>
+        <td class="right">${repairComponent}</td>
     </tr>
     <tr>
         <td class="left">Remark</td>
-        <td class="rigth">${remark}</td>
+        <td class="right">${remark}</td>
     </tr>
     </tbody>
     `;
