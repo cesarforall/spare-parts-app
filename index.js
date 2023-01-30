@@ -1,16 +1,28 @@
 const sparePartsContainer = document.querySelector('.spare-parts-container');
 const versionModelListElement = document.querySelector('.version-model-list');
 const modelListElement = document.querySelector('.model-list');
+const searchInput = document.getElementById('search-input');
+
+modelData.map(item => (item.name = item.name.toUpperCase()));
 
 modelListElement.addEventListener('change', e => {
 	const optionValue = modelListElement.options[modelListElement.selectedIndex].text;
 	addVersionModelList(optionValue);
+	searchInput.classList.add('inactive');
 	sparePartsContainer.innerHTML = '';
 });
 
 versionModelListElement.addEventListener('change', e => {
 	const optionValue = versionModelListElement.options[versionModelListElement.selectedIndex].text;
+	searchInput.classList.remove('inactive');
+	searchInput.value = '';
 	findSpareParts(optionValue);
+});
+
+searchInput.addEventListener('keyup', e => {
+	const word = e.target.value;
+	console.log(word);
+	findByInput(word);
 });
 
 function createSparePartCard(partNumber, partName, repairComponent, remark) {
@@ -81,13 +93,14 @@ function addVersionModelList(option) {
 	createOption(versionModelFound, versionModelListElement, 'VERSIÓN');
 }
 
+let spareParts = [];
 function findSpareParts(model) {
+	spareParts = [];
 	if (model != 'VERSIÓN') {
 		console.log(model);
 		const foundModel = modelData.find(item => item.name == model);
 		console.log(foundModel);
 		const sparePartsArray = foundModel.spareParts;
-		const spareParts = [];
 		sparePartsArray.forEach(item => {
 			const found = sparePartsData.find(sp => {
 				return sp.id == item;
@@ -99,6 +112,21 @@ function findSpareParts(model) {
 		sparePartsContainer.innerHTML = '';
 	}
 }
+
+function findByInput(word) {
+	const normalizedWord = word.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+	const lowerCaseWord = normalizedWord.toLowerCase();
+	let foundByInput = [];
+	console.log(foundByInput);
+	spareParts.forEach(item => {
+		const lowerCaseItem = item['Parts name'].toLowerCase();
+		if (lowerCaseItem.includes(lowerCaseWord)) {
+			foundByInput.push(item);
+		}
+	});
+	displaySpareParts(foundByInput);
+}
+
 function displaySpareParts(data) {
 	const partsLengthElement = document.createElement('p');
 	const partsLength = data.length;

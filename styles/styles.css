@@ -16,6 +16,9 @@ html * {
 	height: 6px;
 	background-image: linear-gradient(0deg, #c7057f 0%, #2a1f6d 100%);
 }
+.inactive {
+	display: none;
+}
 img {
 	width: 100px;
 }
