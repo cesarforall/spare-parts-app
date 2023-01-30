@@ -127,13 +127,12 @@ function findByInput(word) {
 	displaySpareParts(foundByInput);
 }
 
+const partsLengthElement = document.querySelector('.parts-length');
 function displaySpareParts(data) {
-	const partsLengthElement = document.createElement('p');
 	const partsLength = data.length;
 
 	partsLengthElement.innerText = `${partsLength} repuestos compatibles`;
 	sparePartsContainer.innerHTML = '';
-	sparePartsContainer.append(partsLengthElement);
 
 	data.forEach(item => {
 		const partNumber = item['Part number'] || '';
