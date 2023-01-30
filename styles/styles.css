@@ -55,6 +55,7 @@ body {
 .card {
 	position: relative;
 	width: 80%;
+	max-width: 320px;
 	min-height: 350px;
 	padding: 20px;
 	border-radius: 10px;

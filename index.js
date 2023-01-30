@@ -1,8 +1,9 @@
 const sparePartsContainer = document.querySelector('.spare-parts-container');
+const versionModelListElement = document.querySelector('.version-model-list');
 const modelListElement = document.querySelector('.model-list');
 
-modelListElement.addEventListener('click', e => {
-	const optionValue = modelListElement.options[modelListElement.selectedIndex].text;
+versionModelListElement.addEventListener('click', e => {
+	const optionValue = versionModelListElement.options[versionModelListElement.selectedIndex].text;
 	findSpareParts(optionValue);
 });
 
@@ -47,30 +48,34 @@ function createSparePartCard(partNumber, partName, repairComponent, remark) {
 	sparePartsContainer.append(articleElement);
 }
 
-const modelNames = modelData.map(model => model.name.toUpperCase());
+const versionModelNames = modelData.map(model => model.name.toUpperCase());
 
-function createOption(modelNames) {
-	modelNames.forEach(item => {
+function createOption(optionArray, node) {
+	optionArray.forEach(item => {
 		const optionElement = document.createElement('option');
 		optionElement.value = item.toLowerCase;
 		optionElement.innerText = item;
-		modelListElement.append(optionElement);
+		node.append(optionElement);
 	});
 }
 
-createOption(modelNames);
+createOption(versionModelNames, versionModelListElement);
 
 function findSpareParts(model) {
-	const foundModel = modelData.find(item => item.name == model);
-	const sparePartsArray = foundModel.spareParts;
-	const spareParts = [];
-	sparePartsArray.forEach(item => {
-		const found = sparePartsData.find(sp => {
-			return sp.id == item;
+	if (model != 'VERSIÓN') {
+		console.log(model);
+		const foundModel = modelData.find(item => item.name == model);
+		console.log(foundModel);
+		const sparePartsArray = foundModel.spareParts;
+		const spareParts = [];
+		sparePartsArray.forEach(item => {
+			const found = sparePartsData.find(sp => {
+				return sp.id == item;
+			});
+			spareParts.push(found);
 		});
-		spareParts.push(found);
-	});
-	displaySpareParts(spareParts);
+		displaySpareParts(spareParts);
+	}
 }
 function displaySpareParts(data) {
 	sparePartsContainer.innerHTML = '';
@@ -82,3 +87,15 @@ function displaySpareParts(data) {
 		createSparePartCard(partNumber, partName, repairComponent, remark);
 	});
 }
+
+function getModels(modelNames) {
+	const splittedNames = [];
+	modelNames.forEach(item => {
+		splittedNames.push(item.split('-')[0]);
+	});
+	const theModelNames = Array.from(new Set(splittedNames));
+	const orderedModelNames = theModelNames.sort();
+	return orderedModelNames;
+}
+const modelNames = getModels(versionModelNames);
+createOption(modelNames, modelListElement);
