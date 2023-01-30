@@ -69,6 +69,10 @@ body {
 	border-radius: 10px;
 	box-shadow: 0px 0px 8px rgba(89, 73, 30, 0.16);
 }
+.card:hover {
+	box-shadow: 0px 0px 8px 3px rgba(89, 73, 30, 0.16);
+
+}
 .card-img-container {
 	display: flex;
 	justify-content: center;
