@@ -8,14 +8,15 @@ modelData.map(item => (item.name = item.name.toUpperCase()));
 modelListElement.addEventListener('change', e => {
 	const optionValue = modelListElement.options[modelListElement.selectedIndex].text;
 	addVersionModelList(optionValue);
-	partsLengthElement.innerText = ''
+	partsLengthElement.innerText = '';
 	sparePartsContainer.innerHTML = '';
 	searchInput.value = '';
+	searchInput.setAttribute('placeholder', '');
 });
 
 versionModelListElement.addEventListener('change', e => {
 	const optionValue = versionModelListElement.options[versionModelListElement.selectedIndex].text;
-	searchInput.setAttribute('placeholder', 'buscar repuesto')
+	searchInput.setAttribute('placeholder', 'buscar repuesto');
 	searchInput.value = '';
 	findSpareParts(optionValue);
 });
@@ -98,9 +99,7 @@ let spareParts = [];
 function findSpareParts(model) {
 	spareParts = [];
 	if (model != 'VERSIÓN') {
-		console.log(model);
 		const foundModel = modelData.find(item => item.name == model);
-		console.log(foundModel);
 		const sparePartsArray = foundModel.spareParts;
 		sparePartsArray.forEach(item => {
 			const found = sparePartsData.find(sp => {
@@ -155,3 +154,28 @@ function getModels(modelNames) {
 }
 const modelNames = getModels(versionModelNames);
 createOption(modelNames, modelListElement, 'MODELO');
+
+// Credits
+const atElement = document.getElementById('at-element');
+const creditsElement = document.getElementById('credits');
+const creditsLinkElement = document.querySelector('#credits a');
+
+function showElement(elements) {
+	elements.forEach(element => {
+		element.classList.remove('hidden');
+		setTimeout(() => {
+			hideElement(elements);
+		}, 1000);
+	});
+}
+
+function hideElement(elements) {
+	elements.forEach(element => {
+		element.classList.add('hidden');
+	});
+}
+
+// Event listeners
+atElement.addEventListener('click', () => {
+	showElement([creditsLinkElement, creditsElement]);
+});
