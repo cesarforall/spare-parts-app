@@ -3,7 +3,7 @@ const versionModelListElement = document.querySelector('.version-model-list');
 const modelListElement = document.querySelector('.model-list');
 const searchInput = document.getElementById('search-input');
 
-modelData.map(item => (item.name = item.name.toUpperCase()));
+modelosData.map(item => (item.name = item.name.toUpperCase()));
 
 modelListElement.addEventListener('change', e => {
 	const optionValue = modelListElement.options[modelListElement.selectedIndex].text;
@@ -68,7 +68,7 @@ function createSparePartCard(partNumber, partName, repairComponent, remark) {
 	sparePartsContainer.append(articleElement);
 }
 
-const versionModelNames = modelData.map(model => model.name.toUpperCase());
+const versionModelNames = modelosData.map(model => model.name.toUpperCase());
 
 function createOption(optionArray, node, listName) {
 	node.innerText = '';
@@ -99,10 +99,10 @@ let spareParts = [];
 function findSpareParts(model) {
 	spareParts = [];
 	if (model != 'VERSIÓN') {
-		const foundModel = modelData.find(item => item.name == model);
+		const foundModel = modelosData.find(item => item.name == model);
 		const sparePartsArray = foundModel.spareParts;
 		sparePartsArray.forEach(item => {
-			const found = sparePartsData.find(sp => {
+			const found = repuestosData.find(sp => {
 				return sp.id == item;
 			});
 			spareParts.push(found);
