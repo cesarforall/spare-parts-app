@@ -48,6 +48,9 @@ body {
 .header a span {
 	color: #c705aa;
 }
+.update-icon {
+	width: 20px;
+}
 
 .search-parameters {
 	width: 100%;

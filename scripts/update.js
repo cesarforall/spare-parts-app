@@ -133,3 +133,28 @@ function formatDate(date) {
 	const formatedDate = [date.getDate().padLeft(), (date.getMonth() + 1).padLeft(), date.getFullYear()].join('/') + ' ' + [date.getHours().padLeft(), date.getMinutes().padLeft(), date.getSeconds().padLeft()].join(':');
 	return formatedDate;
 }
+
+// Credits
+const atElement = document.getElementById('at-element');
+const creditsElement = document.getElementById('credits');
+const creditsLinkElement = document.querySelector('#credits a');
+
+function showElement(elements) {
+	elements.forEach(element => {
+		element.classList.remove('hidden');
+		setTimeout(() => {
+			hideElement(elements);
+		}, 1000);
+	});
+}
+
+function hideElement(elements) {
+	elements.forEach(element => {
+		element.classList.add('hidden');
+	});
+}
+
+// Event listeners
+atElement.addEventListener('click', () => {
+	showElement([creditsLinkElement, creditsElement]);
+});
