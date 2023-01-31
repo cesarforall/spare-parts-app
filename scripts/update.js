@@ -10,11 +10,13 @@ function createAndDownloadFiles(transformedData, excelLastModifiedDate) {
 	const repuestosData = transformedData.repuestos;
 	const pageLastModifiedDate = formatDate(new Date());
 
-	const modelosDataString = `const modelosData = ${JSON.stringify(modelosData)};`;
-	const repuestosDataString = `const repuestosData = ${JSON.stringify(repuestosData)}; const excelLastModifiedDate = '${excelLastModifiedDate}'; const pageLastModifiedDate = '${pageLastModifiedDate}'`;
+	const secureNum = Math.random().toString();
+
+	const modelosDataString = `const modelosData = ${JSON.stringify(modelosData)}; const modelosSecureNum = '${secureNum}'; const excelLastModifiedDate = '${excelLastModifiedDate}';`;
+	const repuestosDataString = `const repuestosData = ${JSON.stringify(repuestosData)}; const repuestosSecureNum = '${secureNum}'; const pageLastModifiedDate = '${pageLastModifiedDate}';`;
 
 	dataContainerElement.innerText = JSON.stringify(transformedData);
-	
+
 	alert(`Datos cargados!\nSobreescribe:\ndata/modelos-pax.js\ndata/repuestos-pax.js`);
 	downloadToFile(modelosDataString, 'modelos-pax.js', 'text/plain');
 	downloadToFile(repuestosDataString, 'repuestos-pax.js', 'text/plain');
@@ -22,19 +24,19 @@ function createAndDownloadFiles(transformedData, excelLastModifiedDate) {
 
 async function handleFileAsync(e) {
 	const excelFileName = e.target.files[0].name;
-	
+
 	if (excelFileName == 'FICHERO REPUESTO PAX_Zelenza Sparesstock all modelsV2_07_11_22.xlsx') {
 		/* get first file */
 		const excelLastModifiedDate = formatDate(e.target.files[0].lastModifiedDate);
 		const file = e.target.files[0];
-		
+
 		/* get raw data */
 		const data = await file.arrayBuffer();
-		
+
 		/* data is an ArrayBuffer */
 		const wb = XLSX.read(data, { cellText: false, cellDates: true });
 		const transformedData = transformDataForTheProject(wb);
-		
+
 		createAndDownloadFiles(transformedData, excelLastModifiedDate);
 	} else {
 		alert('El archivo no es correcto');
