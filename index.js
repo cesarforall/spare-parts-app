@@ -7,11 +7,20 @@ modelosData.map(item => (item.name = item.name.toUpperCase()));
 
 modelListElement.addEventListener('change', e => {
 	const optionValue = modelListElement.options[modelListElement.selectedIndex].text;
-	addVersionModelList(optionValue);
-	partsLengthElement.innerText = '';
-	sparePartsContainer.innerHTML = '';
-	searchInput.value = '';
-	searchInput.setAttribute('placeholder', '');
+	if (optionValue == 'MODELO') {
+		addVersionModelList('');
+		partsLengthElement.innerText = '';
+		sparePartsContainer.innerHTML = '';
+		searchInput.value = '';
+		searchInput.setAttribute('placeholder', 'buscar part number');
+	}
+	if (optionValue != 'MODELO') {
+		addVersionModelList(optionValue);
+		partsLengthElement.innerText = '';
+		sparePartsContainer.innerHTML = '';
+		searchInput.value = '';
+		searchInput.setAttribute('placeholder', '⬅ selecciona una versión');
+	}
 });
 
 versionModelListElement.addEventListener('change', e => {
@@ -23,8 +32,22 @@ versionModelListElement.addEventListener('change', e => {
 
 searchInput.addEventListener('keyup', e => {
 	const word = e.target.value;
+	const optionValueModel = modelListElement.options[modelListElement.selectedIndex].text;
+	const optionValueVersion = versionModelListElement.options[versionModelListElement.selectedIndex].text;
 	console.log(word);
-	findByInput(word);
+	console.log(optionValueVersion);
+	console.log(optionValueModel);
+
+	if (optionValueModel == 'MODELO' && optionValueVersion == 'VERSIÓN') {
+		if (word != '') {
+			findByNumberInput(word);
+		} else {
+			partsLengthElement.innerText = '';
+			sparePartsContainer.innerHTML = '';
+		}
+	} else {
+		findByInput(word);
+	}
 });
 
 function createSparePartCard(partNumber, partName, repairComponent, remark) {
@@ -125,6 +148,19 @@ function findByInput(word) {
 		}
 	});
 	displaySpareParts(foundByInput);
+}
+
+function findByNumberInput(number) {
+	const stringNumber = number.toString();
+	let foundByNumberInput = [];
+	console.log(foundByNumberInput);
+	repuestosData.forEach(item => {
+		const dataStringNumber = item['Part number'].toString();
+		if (dataStringNumber.includes(stringNumber)) {
+			foundByNumberInput.push(item);
+		}
+	});
+	displaySpareParts(foundByNumberInput);
 }
 
 const partsLengthElement = document.querySelector('.parts-length');
