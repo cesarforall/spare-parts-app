@@ -1,0 +1,17 @@
+.update-section {
+    width: 100%;
+    max-width: 768px;
+    margin: 0 auto;
+    padding: 10px;
+}
+#update-input {
+font-size: 15px;
+}
+#updated-data {
+    display: inline-block;
+    width: 100%;
+    margin-top: 10px;
+    font-size: 10px;
+    text-align: center;
+    word-break: break-all;
+}
