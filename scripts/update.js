@@ -50,6 +50,7 @@ function transformDataForTheProject(wb) {
 	theSheet = wb.Sheets[theSheetName];
 	const theSheetRange = theSheet['!ref'].split(':');
 	const lastCellFromRange = theSheetRange[1].replace(/\D/g, '');
+	const lastColumnFromRange = theSheetRange[1].replace(/[0-9]/g, '');
 	console.log(lastCellFromRange);
 
 	const titlesRow = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: 2 })[0];
@@ -101,10 +102,11 @@ function transformDataForTheProject(wb) {
 	console.log(versions);
 
 	// get full spare parts
-	const sparePartsWithVersions = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: `A4:${lastColumn}${lastCellFromRange}`, blankrows: false });
+	const sparePartsWithVersions = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: `A4:${lastColumnFromRange}${lastCellFromRange}`, blankrows: false });
 	// console.log(sparePartsWithVersions);
 
 	let fullSparePartsWithVersions = [];
+	console.log(sparePartsWithVersions);
 	sparePartsWithVersions.forEach(row => {
 		const compatibleDevicesIdList = [];
 

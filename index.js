@@ -12,6 +12,7 @@ searchByPartNumberCheckbox.addEventListener('change', () => {
 	sparePartsContainer.innerHTML = '';
 	searchInput.value = '';
 	searchInput.setAttribute('placeholder', 'buscar part number');
+	createOption(modelNames, modelListElement, 'MODELO');
 });
 
 versionesData.map(item => (item.name = item.name.toUpperCase()));
