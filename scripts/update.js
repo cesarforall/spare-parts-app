@@ -6,19 +6,19 @@ updateInputElement.addEventListener('change', handleFileAsync, false);
 // updateButtonElement.addEventListener('click', createAndDownloadFiles);
 
 function createAndDownloadFiles(transformedData, excelLastModifiedDate) {
-	const modelosData = transformedData.models;
+	const versionesData = transformedData.versiones;
 	const repuestosData = transformedData.repuestos;
 	const pageLastModifiedDate = formatDate(new Date());
 
 	const secureNum = Math.random().toString();
 
-	const modelosDataString = `const modelosData = ${JSON.stringify(modelosData)}; const modelosSecureNum = '${secureNum}'; const excelLastModifiedDate = '${excelLastModifiedDate}';`;
+	const versionesDataString = `const versionesData = ${JSON.stringify(versionesData)}; const modelosSecureNum = '${secureNum}'; const excelLastModifiedDate = '${excelLastModifiedDate}';`;
 	const repuestosDataString = `const repuestosData = ${JSON.stringify(repuestosData)}; const repuestosSecureNum = '${secureNum}'; const pageLastModifiedDate = '${pageLastModifiedDate}';`;
 
 	dataContainerElement.innerText = JSON.stringify(transformedData);
 
 	alert(`Datos cargados!\nSobreescribe:\ndata/modelos-pax.js\ndata/repuestos-pax.js`);
-	downloadToFile(modelosDataString, 'modelos-pax.js', 'text/plain');
+	downloadToFile(versionesDataString, 'modelos-pax.js', 'text/plain');
 	downloadToFile(repuestosDataString, 'repuestos-pax.js', 'text/plain');
 }
 
@@ -49,18 +49,29 @@ function transformDataForTheProject(wb) {
 	const theSheetName = sheetNames[0];
 	theSheet = wb.Sheets[theSheetName];
 
+	const titlesRow = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: 2 })[0];
+	const titlesRowArray = Object.entries(titlesRow);
+
+	const nameIdVersions = [];
+	titlesRowArray.forEach(item => {
+		if (item[1] == 'Part number' || item[1] == 'Parts name' || item[1] == 'Remark' || item[1] == 'Repair component' || item[1] == '') {
+		} else {
+			nameIdVersions.push(item);
+		}
+	});
+
 	// get objet models
 
-	const rawModels = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: 'C3:AE3' })[0];
-	console.log(rawModels);
+	// const rawModels = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: 'C3:AE3' })[0];
+	// console.log(rawModels);
 
-	function getObjectModels(rawModels) {
-		return Object.entries(rawModels).map(([key, value]) => {
+	function getObjectModels(versions) {
+		return nameIdVersions.map(([key, value]) => {
 			return { name: value, id: key };
 		});
 	}
-	const models = getObjectModels(rawModels);
-	console.log(models);
+	const versions = getObjectModels(nameIdVersions);
+	console.log(versions);
 
 	// get spare parts
 	const spareParts = XLSX.utils.sheet_to_json(theSheet, { header: ['Part number', 'Parts name'], range: 'A4:B463' });
@@ -94,21 +105,21 @@ function transformDataForTheProject(wb) {
 	}
 
 	// Get full list with models and spareparts
-	const fullModelList = [...models];
+	const fullVersionsList = [...versions];
 
-	for (const model of fullModelList) {
+	for (const model of fullVersionsList) {
 		const componentList = getComponentList(model.id);
 		model.spareParts = componentList;
 	}
 
-	const modelosData = [...fullModelList];
+	const versionesData = [...fullVersionsList];
 	const repuestosData = [...fullSpareParts];
 
 	// let html = XLSX.utils.sheet_to_html(theSheet, { header: '' });
 	// console.log(html);
 	// dataContainerElement.innerHTML = html;
 
-	return { models: modelosData, repuestos: repuestosData };
+	return { versiones: versionesData, repuestos: repuestosData };
 }
 
 // Download String object to file
