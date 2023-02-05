@@ -2,6 +2,12 @@ const sparePartsContainer = document.querySelector('.spare-parts-container');
 const versionModelListElement = document.querySelector('.version-model-list');
 const modelListElement = document.querySelector('.model-list');
 const searchInput = document.getElementById('search-input');
+const searchByPartNumberCheckbox = document.getElementById('search-by-part-number-checkbox');
+
+searchByPartNumberCheckbox.addEventListener('change', () => {
+	modelListElement.classList.toggle('inactive');
+	versionModelListElement.classList.toggle('inactive');
+});
 
 versionesData.map(item => (item.name = item.name.toUpperCase()));
 

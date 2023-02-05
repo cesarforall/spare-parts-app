@@ -51,7 +51,10 @@ body {
 .update-icon {
 	width: 20px;
 }
-
+.checkbox-container {
+	padding-left: 5px;
+	text-align: left;
+}
 .search-parameters {
 	width: 100%;
 	max-width: 480px;
