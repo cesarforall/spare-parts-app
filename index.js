@@ -11,11 +11,18 @@ searchByPartNumberCheckbox.addEventListener('change', () => {
 	partsLengthElement.innerText = '';
 	sparePartsContainer.innerHTML = '';
 	searchInput.value = '';
-	searchInput.setAttribute('placeholder', 'buscar part number');
+	if (searchByPartNumberCheckbox.checked) {
+		searchInput.setAttribute('placeholder', 'buscar part number');
+	}
+	if (!searchByPartNumberCheckbox.checked) {
+		searchInput.setAttribute('placeholder', '');
+	}
 	createOption(modelNames, modelListElement, 'MODELO');
 });
 
 versionesData.map(item => (item.name = item.name.toUpperCase()));
+
+let currentSpareParts;
 
 modelListElement.addEventListener('change', e => {
 	const optionValue = modelListElement.options[modelListElement.selectedIndex].text;
@@ -31,35 +38,47 @@ modelListElement.addEventListener('change', e => {
 		partsLengthElement.innerText = '';
 		sparePartsContainer.innerHTML = '';
 		searchInput.value = '';
-		searchInput.setAttribute('placeholder', '⬅ selecciona una versión');
-		findSparePartsByModel(optionValue);
+		searchInput.setAttribute('placeholder', 'buscar repuesto');
+		currentSpareParts = findSparePartsByModel(optionValue);
 	}
 });
 
 versionModelListElement.addEventListener('change', e => {
-	const optionValue = versionModelListElement.options[versionModelListElement.selectedIndex].text;
-	searchInput.setAttribute('placeholder', 'buscar repuesto');
-	searchInput.value = '';
-	findSpareParts(optionValue);
+	const optionValueModel = modelListElement.options[modelListElement.selectedIndex].text;
+	const optionValueVersion = versionModelListElement.options[versionModelListElement.selectedIndex].text;
+
+	if (optionValueVersion == 'VERSIÓN' && optionValueModel != 'MODELO') {
+		addVersionModelList(optionValueModel);
+		partsLengthElement.innerText = '';
+		sparePartsContainer.innerHTML = '';
+		searchInput.value = '';
+		searchInput.setAttribute('placeholder', '⬅ selecciona una versión');
+		currentSpareParts = findSparePartsByModel(optionValueModel);
+	}
+	if (optionValueVersion != 'VERSIÓN') {
+		searchInput.value = '';
+		searchInput.setAttribute('placeholder', 'buscar repuesto');
+		findSpareParts(optionValueVersion);
+	}
 });
 
 searchInput.addEventListener('keyup', e => {
 	const word = e.target.value;
 	const optionValueModel = modelListElement.options[modelListElement.selectedIndex].text;
 	const optionValueVersion = versionModelListElement.options[versionModelListElement.selectedIndex].text;
-	console.log(word);
-	console.log(optionValueVersion);
-	console.log(optionValueModel);
 
-	if (optionValueModel == 'MODELO' && optionValueVersion == 'VERSIÓN') {
+	if (optionValueModel == 'MODELO' && optionValueVersion == 'VERSIÓN' && searchByPartNumberCheckbox.checked) {
 		if (word != '') {
 			findByNumberInput(word);
 		} else {
 			partsLengthElement.innerText = '';
 			sparePartsContainer.innerHTML = '';
 		}
-	} else {
-		findByInput(word);
+	}
+	if (optionValueModel != 'MODELO' && optionValueVersion == 'VERSIÓN') {
+		findByInput(currentSpareParts, word);
+	}
+	if (optionValueModel == 'MODELO' && optionValueVersion == 'VERSIÓN' && !searchByPartNumberCheckbox.checked) {
 	}
 });
 
@@ -67,7 +86,6 @@ function createSparePartCard(partNumber, partName, repairComponent, remark, comp
 	const compatibleDevices = [];
 	if (compatibleDevicesArray) {
 		compatibleDevicesArray.forEach(item => {
-			console.log(item);
 			const id = item[0];
 			const device = versionesData.find(item => item.id == id);
 
@@ -77,8 +95,6 @@ function createSparePartCard(partNumber, partName, repairComponent, remark, comp
 	}
 	let compatibleDevicesHTML = ``;
 	compatibleDevices.forEach(item => (compatibleDevicesHTML += item));
-
-	console.log(compatibleDevicesArray);
 
 	const articleElement = document.createElement('article');
 	articleElement.classList.add('card');
@@ -171,7 +187,6 @@ function findSpareParts(version) {
 function findSparePartsByModel(model) {
 	if (model != 'MODELO') {
 		const filtered = versionesData.filter(item => item.name.startsWith(model));
-		console.log(filtered);
 		const spareParts = [];
 
 		filtered.forEach(singleFiltered => {
@@ -180,19 +195,50 @@ function findSparePartsByModel(model) {
 				const found = repuestosData.find(sp => {
 					return sp.id == singleSparePart;
 				});
-				console.log(found);
 				const isAlreadyInSpareParts = spareParts.find(item => item.id == found.id);
 				if (!isAlreadyInSpareParts) {
 					spareParts.push(found);
 				}
 			});
 		});
-		console.log(spareParts);
 		displaySpareParts(spareParts);
+		return spareParts;
 	}
 }
+function findSparePartsFromFull() {
+	const filtered = versionesData;
+	const spareParts = [];
 
-function findByInput(word) {
+	filtered.forEach(singleFiltered => {
+		const sparePartsArray = singleFiltered.spareParts;
+		sparePartsArray.forEach(singleSparePart => {
+			const found = repuestosData.find(sp => {
+				return sp.id == singleSparePart;
+			});
+			const isAlreadyInSpareParts = spareParts.find(item => item.id == found.id);
+			if (!isAlreadyInSpareParts) {
+				spareParts.push(found);
+			}
+		});
+	});
+	displaySpareParts(spareParts);
+	return spareParts;
+}
+
+function findByInput(spareParts, word) {
+	const normalizedWord = word.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+	const lowerCaseWord = normalizedWord.toLowerCase();
+	let foundByInput = [];
+	spareParts.forEach(item => {
+		const lowerCaseItem = item['Parts name'].toLowerCase();
+		if (lowerCaseItem.includes(lowerCaseWord)) {
+			foundByInput.push(item);
+		}
+	});
+	displaySpareParts(foundByInput);
+}
+
+function findByModelInput(word) {
 	const normalizedWord = word.normalize('NFD').replace(/\p{Diacritic}/gu, '');
 	const lowerCaseWord = normalizedWord.toLowerCase();
 	let foundByInput = [];
@@ -225,8 +271,6 @@ function displaySpareParts(data) {
 
 	partsLengthElement.innerText = `${partsLength} repuestos compatibles`;
 	sparePartsContainer.innerHTML = '';
-
-	console.log(data);
 
 	data.forEach(item => {
 		const partNumber = item['Part number'] || '';
