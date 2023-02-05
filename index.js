@@ -31,7 +31,7 @@ modelListElement.addEventListener('change', e => {
 		partsLengthElement.innerText = '';
 		sparePartsContainer.innerHTML = '';
 		searchInput.value = '';
-		searchInput.setAttribute('placeholder', 'buscar part number');
+		searchInput.setAttribute('placeholder', '');
 	}
 	if (optionValue != 'MODELO') {
 		addVersionModelList(optionValue);
