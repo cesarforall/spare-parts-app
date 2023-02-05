@@ -48,6 +48,9 @@ function transformDataForTheProject(wb) {
 	const sheetNames = wb.SheetNames;
 	const theSheetName = sheetNames[0];
 	theSheet = wb.Sheets[theSheetName];
+	const theSheetRange = theSheet['!ref'].split(':');
+	const lastCellFromRange = theSheetRange[1].replace(/\D/g, '');
+	console.log(lastCellFromRange);
 
 	const titlesRow = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: 2 })[0];
 	const titlesRowArray = Object.entries(titlesRow);
@@ -74,7 +77,7 @@ function transformDataForTheProject(wb) {
 	});
 
 	function getVersionsList(sparePartId) {
-		const theRange = `${modelId}4:${modelId}463`;
+		const theRange = `${modelId}4:${modelId}lastCellFromRange`;
 		const modelComponentList = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: theRange });
 		let componentList = [];
 		for (const component of modelComponentList) {
@@ -96,7 +99,7 @@ function transformDataForTheProject(wb) {
 	console.log(versions);
 
 	// get full spare parts
-	const sparePartsWithVersions = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: 'A4:AG463', blankrows: false });
+	const sparePartsWithVersions = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: 'A4:AGlastCellFromRange', blankrows: false });
 	// console.log(sparePartsWithVersions);
 
 	const fullSparePartsWithVersions = [];
@@ -124,15 +127,15 @@ function transformDataForTheProject(wb) {
 			}
 		});
 
-		const newSparePartObject = { id: rowId, 'Part number': partNumber, 'Parts name': partsName || '', 'Remark': remark || '', 'Repair component': repairComponent || '', 'Compatible device': compatibleDevicesIdList || '' };
+		const newSparePartObject = { id: rowId, 'Part number': partNumber, 'Parts name': partsName || '', Remark: remark || '', 'Repair component': repairComponent || '', 'Compatible device': compatibleDevicesIdList || '' };
 		fullSparePartsWithVersions.push(newSparePartObject);
 		return newSparePartObject;
 	});
 
 	// get spare parts
-	// const spareParts = XLSX.utils.sheet_to_json(theSheet, { header: ['Part number', 'Parts name'], range: 'A4:B463' });
+	// const spareParts = XLSX.utils.sheet_to_json(theSheet, { header: ['Part number', 'Parts name'], range: 'A4:BlastCellFromRange' });
 
-	// const sparePartsLastColums = XLSX.utils.sheet_to_json(theSheet, { header: ['Remark', 'Repair component'], range: 'AF4:AG463', blankrows: false });
+	// const sparePartsLastColums = XLSX.utils.sheet_to_json(theSheet, { header: ['Remark', 'Repair component'], range: 'AF4:AGlastCellFromRange', blankrows: false });
 
 	// const fullSpareParts = [...spareParts];
 	// console.log(fullSpareParts);
@@ -148,10 +151,10 @@ function transformDataForTheProject(wb) {
 	// get full componets for a single model
 	// const modelSpareParts = {};
 
-	// const modelComponentList = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: 'C4:C463' });
+	// const modelComponentList = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: 'C4:ClastCellFromRange' });
 
 	function getComponentList(modelId) {
-		const theRange = `${modelId}4:${modelId}463`;
+		const theRange = `${modelId}4:${modelId}lastCellFromRange`;
 		const modelComponentList = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: theRange });
 		let componentList = [];
 		for (const component of modelComponentList) {
