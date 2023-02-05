@@ -80,6 +80,9 @@ searchInput.addEventListener('keyup', e => {
 	}
 	if (optionValueModel == 'MODELO' && optionValueVersion == 'VERSIÓN' && !searchByPartNumberCheckbox.checked) {
 	}
+	if (optionValueModel != 'MODELO' && optionValueVersion != 'VERSIÓN' && !searchByPartNumberCheckbox.checked) {
+		findByInput(spareParts, word);
+	}
 });
 
 function createSparePartCard(partNumber, partName, repairComponent, remark, compatibleDevicesArray) {
