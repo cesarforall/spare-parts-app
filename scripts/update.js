@@ -12,13 +12,13 @@ function createAndDownloadFiles(transformedData, excelLastModifiedDate) {
 
 	const secureNum = Math.random().toString();
 
-	const versionesDataString = `const versionesData = ${JSON.stringify(versionesData)}; const modelosSecureNum = '${secureNum}'; const excelLastModifiedDate = '${excelLastModifiedDate}';`;
+	const versionesDataString = `const versionesData = ${JSON.stringify(versionesData)}; const versionesSecureNum = '${secureNum}'; const excelLastModifiedDate = '${excelLastModifiedDate}';`;
 	const repuestosDataString = `const repuestosData = ${JSON.stringify(repuestosData)}; const repuestosSecureNum = '${secureNum}'; const pageLastModifiedDate = '${pageLastModifiedDate}';`;
 
 	dataContainerElement.innerText = JSON.stringify(transformedData);
 
-	alert(`Datos cargados!\nSobreescribe:\ndata/modelos-pax.js\ndata/repuestos-pax.js`);
-	downloadToFile(versionesDataString, 'modelos-pax.js', 'text/plain');
+	alert(`Datos cargados!\nSobreescribe:\ndata/versiones-pax.js\ndata/repuestos-pax.js`);
+	downloadToFile(versionesDataString, 'versiones-pax.js', 'text/plain');
 	downloadToFile(repuestosDataString, 'repuestos-pax.js', 'text/plain');
 }
 
@@ -75,6 +75,8 @@ function transformDataForTheProject(wb) {
 			nameIdVersions.push(item);
 		}
 	});
+	const lastColumn = nameIdVersions[nameIdVersions.length - 1][0];
+	console.log(lastColumn);
 
 	function getVersionsList(sparePartId) {
 		const theRange = `${modelId}4:${modelId}lastCellFromRange`;
@@ -99,10 +101,10 @@ function transformDataForTheProject(wb) {
 	console.log(versions);
 
 	// get full spare parts
-	const sparePartsWithVersions = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: 'A4:AGlastCellFromRange', blankrows: false });
+	const sparePartsWithVersions = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: `A4:${lastColumn}${lastCellFromRange}`, blankrows: false });
 	// console.log(sparePartsWithVersions);
 
-	const fullSparePartsWithVersions = [];
+	let fullSparePartsWithVersions = [];
 	sparePartsWithVersions.forEach(row => {
 		const compatibleDevicesIdList = [];
 
@@ -128,9 +130,11 @@ function transformDataForTheProject(wb) {
 		});
 
 		const newSparePartObject = { id: rowId, 'Part number': partNumber, 'Parts name': partsName || '', Remark: remark || '', 'Repair component': repairComponent || '', 'Compatible device': compatibleDevicesIdList || '' };
+		console.log(newSparePartObject);
 		fullSparePartsWithVersions.push(newSparePartObject);
-		return newSparePartObject;
 	});
+
+	console.log(fullSparePartsWithVersions);
 
 	// get spare parts
 	// const spareParts = XLSX.utils.sheet_to_json(theSheet, { header: ['Part number', 'Parts name'], range: 'A4:BlastCellFromRange' });
@@ -154,8 +158,10 @@ function transformDataForTheProject(wb) {
 	// const modelComponentList = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: 'C4:ClastCellFromRange' });
 
 	function getComponentList(modelId) {
-		const theRange = `${modelId}4:${modelId}lastCellFromRange`;
+		const theRange = `${modelId}4:${modelId}${lastCellFromRange}`;
 		const modelComponentList = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: theRange });
+		console.log(theRange);
+		console.log(modelComponentList);
 		let componentList = [];
 		for (const component of modelComponentList) {
 			componentList.push(component['__rowNum__']);
@@ -165,6 +171,7 @@ function transformDataForTheProject(wb) {
 
 	// Get full list with models and spareparts
 	const fullVersionsList = [...versions];
+	console.log(fullVersionsList);
 
 	for (const model of fullVersionsList) {
 		const componentList = getComponentList(model.id);
@@ -173,6 +180,8 @@ function transformDataForTheProject(wb) {
 
 	const versionesData = [...fullVersionsList];
 	const repuestosData = [...fullSparePartsWithVersions];
+	console.log(repuestosData);
+	console.log(versionesData);
 
 	// let html = XLSX.utils.sheet_to_html(theSheet, { header: '' });
 	// console.log(html);
