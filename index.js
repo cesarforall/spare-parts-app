@@ -56,7 +56,23 @@ searchInput.addEventListener('keyup', e => {
 	}
 });
 
-function createSparePartCard(partNumber, partName, repairComponent, remark) {
+function createSparePartCard(partNumber, partName, repairComponent, remark, compatibleDevicesArray) {
+	const compatibleDevices = [];
+	if (compatibleDevicesArray) {
+		compatibleDevicesArray.forEach(item => {
+			console.log(item);
+			const id = item[0];
+			const device = versionesData.find(item => item.id == id);
+
+			const versionName = `<span>${device.name}</span><br>`;
+			compatibleDevices.push(versionName);
+		});
+	}
+	let compatibleDevicesHTML = ``;
+	compatibleDevices.forEach(item => (compatibleDevicesHTML += item));
+
+	console.log(compatibleDevicesArray);
+
 	const articleElement = document.createElement('article');
 	articleElement.classList.add('card');
 
@@ -87,6 +103,10 @@ function createSparePartCard(partNumber, partName, repairComponent, remark) {
     <tr>
         <td class="left">Remark</td>
         <td class="right">${remark}</td>
+    </tr>
+    <tr>
+        <td class="left">Compatible devices</td>
+        <td class="right">${compatibleDevicesHTML}</td>
     </tr>
     </tbody>
     `;
@@ -176,12 +196,15 @@ function displaySpareParts(data) {
 	partsLengthElement.innerText = `${partsLength} repuestos compatibles`;
 	sparePartsContainer.innerHTML = '';
 
+	console.log(data);
+
 	data.forEach(item => {
 		const partNumber = item['Part number'] || '';
 		const partName = item['Parts name'] || '';
 		const repairComponent = item['Repair component'] || '';
 		const remark = item['Remark'] || '';
-		createSparePartCard(partNumber, partName, repairComponent, remark, length);
+		const compatibleDevices = item['Compatible device'];
+		createSparePartCard(partNumber, partName, repairComponent, remark, compatibleDevices);
 	});
 }
 
