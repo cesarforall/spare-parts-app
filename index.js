@@ -7,6 +7,11 @@ const searchByPartNumberCheckbox = document.getElementById('search-by-part-numbe
 searchByPartNumberCheckbox.addEventListener('change', () => {
 	modelListElement.classList.toggle('inactive');
 	versionModelListElement.classList.toggle('inactive');
+	addVersionModelList('');
+	partsLengthElement.innerText = '';
+	sparePartsContainer.innerHTML = '';
+	searchInput.value = '';
+	searchInput.setAttribute('placeholder', 'buscar part number');
 });
 
 versionesData.map(item => (item.name = item.name.toUpperCase()));
@@ -26,6 +31,7 @@ modelListElement.addEventListener('change', e => {
 		sparePartsContainer.innerHTML = '';
 		searchInput.value = '';
 		searchInput.setAttribute('placeholder', '⬅ selecciona una versión');
+		findSparePartsByModel(optionValue);
 	}
 });
 
@@ -145,11 +151,11 @@ function addVersionModelList(option) {
 }
 
 let spareParts = [];
-function findSpareParts(model) {
+function findSpareParts(version) {
 	spareParts = [];
-	if (model != 'VERSIÓN') {
-		const foundModel = versionesData.find(item => item.name == model);
-		const sparePartsArray = foundModel.spareParts;
+	if (version != 'VERSIÓN') {
+		const foundVersion = versionesData.find(item => item.name == version);
+		const sparePartsArray = foundVersion.spareParts;
 		sparePartsArray.forEach(item => {
 			const found = repuestosData.find(sp => {
 				return sp.id == item;
@@ -159,6 +165,29 @@ function findSpareParts(model) {
 		displaySpareParts(spareParts);
 	} else {
 		sparePartsContainer.innerHTML = '';
+	}
+}
+function findSparePartsByModel(model) {
+	if (model != 'MODELO') {
+		const filtered = versionesData.filter(item => item.name.startsWith(model));
+		console.log(filtered);
+		const spareParts = [];
+
+		filtered.forEach(singleFiltered => {
+			const sparePartsArray = singleFiltered.spareParts;
+			sparePartsArray.forEach(singleSparePart => {
+				const found = repuestosData.find(sp => {
+					return sp.id == singleSparePart;
+				});
+				console.log(found);
+				const isAlreadyInSpareParts = spareParts.find(item => item.id == found.id);
+				if (!isAlreadyInSpareParts) {
+					spareParts.push(found);
+				}
+			});
+		});
+		console.log(spareParts);
+		displaySpareParts(spareParts);
 	}
 }
 
