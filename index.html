@@ -5,28 +5,43 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="./styles/normalize.css">
+        <link rel="stylesheet" href="../../styles/bulma.css">
         <link rel="stylesheet" href="./styles/styles.css">
         <title>ZLAB Repuestos</title>
     </head>
     <body class="body">
         <header class="header">
+            <nav class="navbar is-transparent has-shadow" role="navigation" aria-label="main navigation">
+                <div class="container is-max-widescreen">
+                    <div class="navbar-brand">
+                        <a class="navbar-item" href="../../index.html"><strong>Herramientas LAB</strong></a>
+                        <a class="navbar-item" href="index.html">|</a>
+                        <a class="navbar-item" href="../../index.html">Comentarios</a>
+                        <a class="navbar-item" href="../../pages/versions.html">Versiones</a>
+                        <a id="zlab-logo" class="navbar-item  is-tab is-active" href="./apps/spare-parts-app/index.html"><span>Z</span>LAB Repuestos</a>
+                    </div>
+                </div>
+            </nav>
+            <div class="separator"></div>
             <div class="header-titles">
-                <a href="./index.html"><span>Z</span>LAB Repuestos</a>
+                <!-- <a id="zlab-logo" href="./index.html"><span>Z</span>LAB Repuestos</a> -->
                 <h1 class="family-title">PAX<a href="./pages/update.html"><img class="update-icon" src="./img/pen-to-square-solid.svg" alt="pen inside a checkbox"></a></h1>
             </div>
-            <div class="search-parameters">
-                <div class="checkbox-container">
-                    <input type="checkbox" name="search-by-part-number" id="search-by-part-number-checkbox">
-                    <label for="search-by-part-number">Buscar Part Number</label>
-                </div>
-                <div class="model-version-container">
-                    <select class="model-list" name="" id="model-list">
-                        <option value="">MODELO</option>
-                    </select>
-                    <select class="version-model-list" name="" id="version-model-list">
-                        <option value="">VERSIÓN</option>
-                    </select>
-                    <input id="search-input" type="text" placeholder="">
+            <div class="search-parameters-container">
+                <div class="search-parameters">
+                    <div class="checkbox-container">
+                        <input type="checkbox" name="search-by-part-number" id="search-by-part-number-checkbox">
+                        <label for="search-by-part-number">Buscar Part Number</label>
+                    </div>
+                    <div class="model-version-container">
+                        <select class="model-list" name="" id="model-list">
+                            <option value="">MODELO</option>
+                        </select>
+                        <select class="version-model-list" name="" id="version-model-list">
+                            <option value="">VERSIÓN</option>
+                        </select>
+                        <input id="search-input" type="text" placeholder="">
+                    </div>
                 </div>
             </div>
         </header>
@@ -40,7 +55,7 @@
         <footer class="footer">
             <p>Centro de Laboratorio</p>
             <p id="at-element">@</p>
-            <p id="credits" class="hidden">Made with 💜 by <a class="hidden" href="https://github.com/cesarforall" target="_blank">César Almeida</a></p>
+            <p id="credits" class="hidden">Made with 💜 by <a class="hidden" href="#">César Almeida</a> https://github.com/cesarforall</p>
         </footer>
         <script src="./data/versiones-pax.js"></script>
         <script src="./data/repuestos-pax.js"></script>
