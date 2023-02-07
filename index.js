@@ -3,6 +3,8 @@ const versionModelListElement = document.querySelector('.version-model-list');
 const modelListElement = document.querySelector('.model-list');
 const searchInput = document.getElementById('search-input');
 const searchByPartNumberCheckbox = document.getElementById('search-by-part-number-checkbox');
+const lastPageElement = document.getElementById('last-page');
+const lastDataElement = document.getElementById('last-data');
 
 searchByPartNumberCheckbox.addEventListener('change', () => {
 	modelListElement.classList.toggle('inactive');
@@ -321,3 +323,13 @@ function hideElement(elements) {
 atElement.addEventListener('click', () => {
 	showElement([creditsLinkElement, creditsElement]);
 });
+
+// Last updates
+if (versionesSecureNum == repuestosSecureNum) {
+	lastPageElement.innerText = `Última actualización de página: ${pageLastModifiedDate}`;
+	lastDataElement.innerText = `Última actualización de datos: ${excelLastModifiedDate}`;
+} else {
+	lastPageElement.classList.add('red');
+	lastPageElement.innerText = `Error en la carga de datos!`;
+	lastDataElement.innerText = ``;
+}

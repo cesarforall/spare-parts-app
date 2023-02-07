@@ -55,6 +55,12 @@ body {
 .update-icon {
 	width: 20px;
 }
+.red {
+	color: red;
+}
+.last-updates-container {
+	margin-bottom: 10px;
+}
 .checkbox-container {
 	padding-left: 5px;
 	text-align: left;

@@ -1,6 +1,8 @@
 const updateInputElement = document.getElementById('update-input');
 // const updateButtonElement = document.getElementById('update-button');
 const dataContainerElement = document.getElementById('updated-data');
+const lastPageElement = document.getElementById('last-page');
+const lastDataElement = document.getElementById('last-data');
 
 updateInputElement.addEventListener('change', handleFileAsync, false);
 // updateButtonElement.addEventListener('click', createAndDownloadFiles);
@@ -239,3 +241,14 @@ function hideElement(elements) {
 atElement.addEventListener('click', () => {
 	showElement([creditsLinkElement, creditsElement]);
 });
+
+// Last updates
+if (versionesSecureNum == repuestosSecureNum) {
+	lastPageElement.innerText = `Última actualización de página: ${pageLastModifiedDate}`;
+	lastDataElement.innerText = `Última actualización de datos: ${excelLastModifiedDate}`;
+} else {
+	lastPageElement.classList.add('red');
+	lastDataElement.classList.add('red');
+	lastPageElement.innerText = `Error en la carga de datos!`;
+	lastDataElement.innerText = `Los archivos de datos no son de la misma descarga`;
+}
