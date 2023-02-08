@@ -109,7 +109,7 @@ function createSparePartCard(partNumber, partName, repairComponent, remark, comp
 
 	const imgElement = document.createElement('img');
 	imgElement.classList.add('card-img');
-	imgElement.setAttribute('src', `./data/img-repuestos-pax/${partNumber}.jpg` || './img/tvp.png');
+	imgElement.setAttribute('src', `../../data/img-repuestos-pax/${partNumber}.jpg` || './img/tvp.png');
 	imgElement.setAttribute('alt', 'spare part');
 
 	const tableElement = document.createElement('table');

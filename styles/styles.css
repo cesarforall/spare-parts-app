@@ -55,6 +55,9 @@ body {
 .update-icon {
 	width: 20px;
 }
+.family-title a:hover {
+	cursor: text;
+}
 .red {
 	color: red;
 }
@@ -175,10 +178,10 @@ body {
 	width: 100%;
 	word-break: break-word;
 }
-.card-table tr td span{
+.card-table tr td span {
 	font-size: 9px;
 }
-.card-table tr:last-child td:last-child{
+.card-table tr:last-child td:last-child {
 	display: inline-block;
 	height: 50px;
 	overflow-y: scroll;
