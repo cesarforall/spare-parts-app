@@ -26,8 +26,9 @@ function createAndDownloadFiles(transformedData, excelLastModifiedDate) {
 
 async function handleFileAsync(e) {
 	const excelFileName = e.target.files[0].name;
+	const isValidFile = excelFileName.startsWith('FICHERO REPUESTO') && excelFileName.endsWith('.xlsx');
 
-	if (excelFileName == 'FICHERO REPUESTO PAX_Zelenza Sparesstock all modelsV2_07_11_22.xlsx') {
+	if (isValidFile) {
 		/* get first file */
 		const excelLastModifiedDate = formatDate(e.target.files[0].lastModifiedDate);
 		const file = e.target.files[0];
@@ -46,6 +47,7 @@ async function handleFileAsync(e) {
 }
 
 function transformDataForTheProject(wb) {
+	console.log(wb);
 	/* get the sheet */
 	const sheetNames = wb.SheetNames;
 	const theSheetName = sheetNames[0];
