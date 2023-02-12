@@ -12,16 +12,12 @@ function createAndDownloadFiles(transformedData, excelLastModifiedDate) {
 	const repuestosData = transformedData.repuestos;
 	const pageLastModifiedDate = formatDate(new Date());
 
-	const secureNum = Math.random().toString();
+	const repuestosDataString = `const repuestosData = ${JSON.stringify(repuestosData)}; const versionesData = ${JSON.stringify(versionesData)}; const excelLastModifiedDate = '${excelLastModifiedDate}'; const pageLastModifiedDate = '${pageLastModifiedDate}';`;
 
-	const versionesDataString = `const versionesData = ${JSON.stringify(versionesData)}; const versionesSecureNum = '${secureNum}'; const excelLastModifiedDate = '${excelLastModifiedDate}';`;
-	const repuestosDataString = `const repuestosData = ${JSON.stringify(repuestosData)}; const repuestosSecureNum = '${secureNum}'; const pageLastModifiedDate = '${pageLastModifiedDate}';`;
+	dataContainerElement.innerText = 'Datos cargados correctamente';
 
-	dataContainerElement.innerText = JSON.stringify(transformedData);
-
-	alert(`Datos cargados!\nSobreescribe:\ndata/versiones-pax.js\ndata/repuestos-pax.js`);
-	downloadToFile(versionesDataString, 'versiones-pax.js', 'text/plain');
-	downloadToFile(repuestosDataString, 'repuestos-pax.js', 'text/plain');
+	alert(`Datos cargados!\nSobreescribe:\ndata/repuestos.js`);
+	downloadToFile(repuestosDataString, 'repuestos.js', 'text/plain');
 }
 
 async function handleFileAsync(e) {
@@ -51,14 +47,16 @@ function transformDataForTheProject(wb) {
 	/* get the sheet */
 	const sheetNames = wb.SheetNames;
 	const theSheetName = sheetNames[0];
-	theSheet = wb.Sheets[theSheetName];
+	const theSheet = wb.Sheets[theSheetName];
 	const theSheetRange = theSheet['!ref'].split(':');
 	const lastCellFromRange = theSheetRange[1].replace(/\D/g, '');
 	const lastColumnFromRange = theSheetRange[1].replace(/[0-9]/g, '');
 	console.log(lastCellFromRange);
 
-	const titlesRow = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: 2 })[0];
+	const titlesRow = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: 4 })[0];
+	console.log(titlesRow)
 	const titlesRowArray = Object.entries(titlesRow);
+	console.log(titlesRowArray)
 	// console.log(titlesRowArray);
 
 	// Get headers names and id

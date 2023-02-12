@@ -192,6 +192,7 @@ function findSpareParts(version) {
 function findSparePartsByModel(model) {
 	if (model != 'MODELO') {
 		const filtered = versionesData.filter(item => item.name.startsWith(model));
+		console.log(filtered);
 		const spareParts = [];
 
 		filtered.forEach(singleFiltered => {
@@ -325,11 +326,5 @@ atElement.addEventListener('click', () => {
 });
 
 // Last updates
-if (versionesSecureNum == repuestosSecureNum) {
-	lastPageElement.innerText = `Última actualización de página: ${pageLastModifiedDate}`;
-	lastDataElement.innerText = `Última actualización de datos: ${excelLastModifiedDate}`;
-} else {
-	lastPageElement.classList.add('red');
-	lastPageElement.innerText = `Error en la carga de datos!`;
-	lastDataElement.innerText = ``;
-}
+lastPageElement.innerText = `Última actualización de página: ${pageLastModifiedDate}`;
+lastDataElement.innerText = `Última actualización de datos: ${excelLastModifiedDate}`;
