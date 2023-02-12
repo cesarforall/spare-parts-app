@@ -16,7 +16,7 @@ function createAndDownloadFiles(transformedData, excelLastModifiedDate) {
 
 	dataContainerElement.innerText = 'Datos cargados correctamente';
 
-	alert(`Datos cargados!\nSobreescribe:\ndata/repuestos.js`);
+	// alert(`Datos cargados!\nSobreescribe:\ndata/repuestos.js`);
 	downloadToFile(repuestosDataString, 'repuestos.js', 'text/plain');
 }
 
@@ -35,10 +35,10 @@ async function handleFileAsync(e) {
 		/* data is an ArrayBuffer */
 		const wb = XLSX.read(data, { cellText: false, cellDates: true });
 		const transformedData = transformDataForTheProject(wb);
-		console.log(transformedData)
+		console.log(transformedData);
 
 		createAndDownloadFiles(transformedData, excelLastModifiedDate);
-	} else { 
+	} else {
 		alert('El archivo no es correcto');
 	}
 }
@@ -53,6 +53,10 @@ function transformDataForTheProject(wb) {
 	const lastCellFromRange = theSheetRange[1].replace(/\D/g, '');
 	const lastColumnFromRange = theSheetRange[1].replace(/[0-9]/g, '');
 	console.log(lastCellFromRange);
+
+	const manufacturerRow = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: 3 })[0];
+	const manufacturerRowArray = Object.entries(manufacturerRow);
+	console.log(manufacturerRowArray);
 
 	const titlesRow = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: 4 })[0];
 	console.log(titlesRow);
@@ -72,7 +76,7 @@ function transformDataForTheProject(wb) {
 	});
 	console.log(headersWithId);
 
-	console.log(titlesRowArray)
+	console.log(titlesRowArray);
 	const nameIdVersions = [];
 	titlesRowArray.forEach(item => {
 		if (item[1] == 'Part number' || item[1] == 'Parts name' || item[1] == 'ORIGINAL' || item[1] == 'Remark' || item[1] == 'Repair component' || item[1] == '') {
@@ -99,7 +103,8 @@ function transformDataForTheProject(wb) {
 
 	function getObjectModels(versions) {
 		return nameIdVersions.map(([key, value]) => {
-			return { name: value, id: key };
+			const manufacturerFound = manufacturerRowArray.find(m => m[0] == key)[1];
+			return { name: value, id: key, manufacturer: manufacturerFound };
 		});
 	}
 	const versions = getObjectModels(nameIdVersions);
