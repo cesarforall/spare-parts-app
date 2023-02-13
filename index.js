@@ -189,21 +189,16 @@ function findSpareParts(version) {
 	}
 }
 function findSparePartsByModel(model) {
-	console.log(model);
 	if (model != 'MODELO') {
 		versionesData.map(item => item.id == item.id.toString());
 		const filtered = versionesData.filter(item => item.name.startsWith(model));
-		console.log(filtered);
 		const spareParts = [];
 		filtered.forEach(singleFiltered => {
 			const sparePartsArray = singleFiltered.spareParts;
-			// console.log(sparePartsArray);
 			sparePartsArray.forEach(singleSparePart => {
-				// console.log(singleSparePart);
 				const found = repuestosData.find(sp => {
 					return sp.id == singleSparePart;
 				});
-				// console.log(found);
 				const isAlreadyInSpareParts = spareParts.find(item => item.id == found.id);
 				if (!isAlreadyInSpareParts) {
 					spareParts.push(found);
@@ -251,7 +246,6 @@ function findByModelInput(word) {
 	const normalizedWord = word.normalize('NFD').replace(/\p{Diacritic}/gu, '');
 	const lowerCaseWord = normalizedWord.toLowerCase();
 	let foundByInput = [];
-	console.log(foundByInput);
 	spareParts.forEach(item => {
 		const lowerCaseItem = item['Parts name'].toLowerCase();
 		if (lowerCaseItem.includes(lowerCaseWord)) {
@@ -262,22 +256,18 @@ function findByModelInput(word) {
 }
 
 function findByNumberInput(number) {
-	console.log(repuestosData.length);
 	const stringNumber = number.toString();
 	let foundByNumberInput = [];
-	// console.log(foundByNumberInput);
 	repuestosData.forEach(item => {
 		const dataStringNumber = item['Part number'].toString();
 		if (dataStringNumber.includes(stringNumber)) {
 			foundByNumberInput.push(item);
 		} else {
-			console.log(dataStringNumber);
 		}
 	});
 	displaySpareParts(foundByNumberInput);
 }
 
-console.log(repuestosData.length);
 const partsLengthElement = document.querySelector('.parts-length');
 function displaySpareParts(data) {
 	const partsLength = data.length;
@@ -306,6 +296,8 @@ function getModels(modelNames) {
 }
 const modelNames = getModels(versionModelNames);
 createOption(modelNames, modelListElement, 'MODELO');
+
+displaySpareParts(repuestosData);
 
 // Credits
 const atElement = document.getElementById('at-element');
