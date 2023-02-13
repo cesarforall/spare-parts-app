@@ -53,6 +53,7 @@ body {
 	padding: 20px 0;
 }
 .update-icon {
+	margin-left: 10px;
 	width: 20px;
 }
 .family-title a:hover {
