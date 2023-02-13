@@ -51,6 +51,9 @@ function transformDataForTheProject(wb) {
 	const lastCellFromRange = theSheetRange[1].replace(/\D/g, '');
 	const lastColumnFromRange = theSheetRange[1].replace(/[0-9]/g, '');
 
+	const modelRow = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: 2 })[0];
+	const modelRowArray = Object.entries(modelRow);
+
 	const manufacturerRow = XLSX.utils.sheet_to_json(theSheet, { header: 'A', range: 3 })[0];
 	const manufacturerRowArray = Object.entries(manufacturerRow);
 
@@ -89,8 +92,24 @@ function transformDataForTheProject(wb) {
 
 	function getObjectModels(versions) {
 		return nameIdVersions.map(([key, value]) => {
-			const manufacturerFound = manufacturerRowArray.find(m => m[0] == key)[1];
-			return { name: value, id: key, manufacturer: manufacturerFound };
+			const foundManufacturer = () => {
+				const found = manufacturerRowArray.find(model => model[0] == key);
+				if (found === undefined) {
+					return 'no manufacturer';
+				} else {
+					return found[1];
+				}
+			};
+			const foundModel = () => {
+				const found = modelRowArray.find(model => model[0] == key);
+				if (found === undefined) {
+					return 'no model';
+				} else {
+					return found[1];
+				}
+			};
+
+			return { name: value, id: key, manufacturer: foundManufacturer(), model: foundModel() };
 		});
 	}
 	const versions = getObjectModels(nameIdVersions);
