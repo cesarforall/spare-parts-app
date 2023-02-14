@@ -40,65 +40,61 @@ searchByPartNumberCheckbox.addEventListener('change', () => {
 
 versionesData.map(item => (item.name = item.name.toUpperCase()));
 
-modelListElement.addEventListener('change', e => {
-	const optionValue = modelListElement.options[modelListElement.selectedIndex].text;
-	if (optionValue == 'MODELO') {
-		addVersionModelList('');
-		partsLengthElement.innerText = '';
-		sparePartsContainer.innerHTML = '';
-		searchInput.value = '';
-		searchInput.setAttribute('placeholder', '');
-	}
-	if (optionValue != 'MODELO') {
-		addVersionModelList(optionValue);
-		partsLengthElement.innerText = '';
-		sparePartsContainer.innerHTML = '';
-		searchInput.value = '';
-		searchInput.setAttribute('placeholder', 'buscar repuesto');
-		currentSpareParts = findSparePartsByModel(optionValue);
-	}
-});
+function cleanHtml() {
+	partsLengthElement.innerText = '';
+	sparePartsContainer.innerHTML = '';
+	searchInput.value = '';
+	searchInput.setAttribute('placeholder', '');
+}
 
 manufacturerListElement.addEventListener('change', e => {
 	const optionValue = manufacturerListElement.options[manufacturerListElement.selectedIndex].text;
 	console.log(optionValue);
-	if (optionValue == 'FABRICANTE') {
-		addModelList('');
-		addVersionModelList('');
-		partsLengthElement.innerText = '';
-		sparePartsContainer.innerHTML = '';
-		searchInput.value = '';
-		searchInput.setAttribute('placeholder', '');
-		currentSpareParts = findSparePartsFromFull(optionValue);
+	if (optionValue === 'FABRICANTE') {
+		currentSpareParts = [...repuestosData];
+		createOptions([], modelListElement, 'MODELO');
+		createOptions([], versionModelListElement, 'VERSIÓN');
+		displaySpareParts(currentSpareParts);
 	}
 	if (optionValue != 'FABRICANTE') {
-		console.log(optionValue);
-		addModelList(optionValue);
-		addVersionModelList('');
-		partsLengthElement.innerText = '';
-		sparePartsContainer.innerHTML = '';
-		searchInput.value = '';
-		searchInput.setAttribute('placeholder', 'buscar repuesto');
-		currentSpareParts = findSparePartsByManufacturer(optionValue);
+		findSparePartsByCategory('FABRICANTE', optionValue);
+		const modelList = getModelList(optionValue);
+		createOptions(modelList, modelListElement, 'MODELO');
+	}
+});
+
+modelListElement.addEventListener('change', e => {
+	const optionValue = modelListElement.options[modelListElement.selectedIndex].text;
+	const fatherValue = manufacturerListElement.options[manufacturerListElement.selectedIndex].text;
+	console.log(fatherValue);
+	if (optionValue === 'MODELO') {
+		currentSpareParts = [...repuestosData];
+		createOptions([], versionModelListElement, 'VERSIÓN');
+		findSparePartsByCategory('FABRICANTE', fatherValue);
+	}
+	if (optionValue != 'MODELO') {
+		currentSpareParts = [...repuestosData];
+		findSparePartsByCategory('FABRICANTE', fatherValue);
+		findSparePartsByCategory('MODELO', optionValue);
+		const versionList = getVersionList(optionValue);
+		createOptions(versionList, versionModelListElement, 'VERSIÓN');
 	}
 });
 
 versionModelListElement.addEventListener('change', e => {
-	const optionValueModel = modelListElement.options[modelListElement.selectedIndex].text;
-	const optionValueVersion = versionModelListElement.options[versionModelListElement.selectedIndex].text;
-
-	if (optionValueVersion == 'VERSIÓN' && optionValueModel != 'MODELO') {
-		addVersionModelList(optionValueModel);
-		partsLengthElement.innerText = '';
-		sparePartsContainer.innerHTML = '';
-		searchInput.value = '';
-		searchInput.setAttribute('placeholder', '⬅ selecciona una versión');
-		currentSpareParts = findSparePartsByModel(optionValueModel);
+	const optionValue = versionModelListElement.options[versionModelListElement.selectedIndex].text;
+	const fatherValue = modelListElement.options[modelListElement.selectedIndex].text;
+	const grandFatherValue = manufacturerListElement.options[manufacturerListElement.selectedIndex].text;
+	if (optionValue === 'VERSIÓN') {
+		currentSpareParts = [...repuestosData];
+		findSparePartsByCategory('FABRICANTE', grandFatherValue);
+		findSparePartsByCategory('MODELO', fatherValue);
 	}
-	if (optionValueVersion != 'VERSIÓN') {
-		searchInput.value = '';
-		searchInput.setAttribute('placeholder', 'buscar repuesto');
-		findSpareParts(optionValueVersion);
+	if (optionValue != 'VERSIÓN') {
+		currentSpareParts = [...repuestosData];
+		findSparePartsByCategory('FABRICANTE', grandFatherValue);
+		findSparePartsByCategory('MODELO', fatherValue);
+		findSparePartsByCategory('VERSIÓN', optionValue);
 	}
 });
 
@@ -222,15 +218,26 @@ function createOptions(optionList, node, listName) {
 				node.append(optionElement);
 			});
 	}
+	if (listName === 'VERSIÓN' || listName === 'VERSION') {
+		console.log(optionList);
+		optionList.forEach(option => {
+			const optionElement = document.createElement('option');
+			optionElement.value = option.toLowerCase;
+			optionElement.innerText = option;
+			node.append(optionElement);
+		});
+	}
 }
 
 function addVersionModelList(option) {
+	console.log(option);
 	option.toUpperCase();
-	const versionModelFound = Array.from(new Set(versionesData.filter(version => version.model.toUpperCase() == option.toUpperCase()).map(version => version.name))).sort();
+	const versionModelFound = Array.from(new Set(currentVersionsData.filter(version => version.model.toUpperCase() == option.toUpperCase()).map(version => version.name))).sort();
+	console.log(versionModelFound);
 	createOptions(versionModelFound, versionModelListElement, 'VERSIÓN');
 }
 function addModelList(option) {
-	const foundModels = Array.from(new Set(versionesData.filter(version => version.manufacturer.toUpperCase() == option.toUpperCase()).map(version => version.model))).sort();
+	const foundModels = Array.from(new Set(currentVersionsData.filter(version => version.manufacturer.toUpperCase() == option.toUpperCase()).map(version => version.model))).sort();
 	console.log(foundModels);
 	createOptions(foundModels, modelListElement, 'MODELO');
 }
@@ -387,12 +394,12 @@ function findSparePartsByCategory(category, value) {
 		fillSparePartsArray();
 	}
 	if (nCategory === 'MODELO') {
-		filteredVersions = currentSpareParts.filter(version => normalizeString(version.model) == nValue);
+		filteredVersions = currentVersionsData.filter(version => normalizeString(version.model) == nValue);
 		currentVersionsData = [...filteredVersions];
 		fillSparePartsArray();
 	}
 	if (nCategory === 'VERSION') {
-		filteredVersions = currentSpareParts.filter(version => normalizeString(version.version) == nValue);
+		filteredVersions = currentVersionsData.filter(version => normalizeString(version.version) == nValue);
 		currentVersionsData = [...filteredVersions];
 		fillSparePartsArray();
 	}
