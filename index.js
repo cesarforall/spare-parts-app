@@ -8,6 +8,20 @@ const lastPageElement = document.getElementById('last-page');
 const lastDataElement = document.getElementById('last-data');
 const partsLengthElement = document.querySelector('.parts-length');
 
+// const modelNames = getModels(versionModelNames);
+
+// const orderedManufacturers = Array.from(manufacturers).sort();
+let currentSpareParts = [...repuestosData];
+let currentVersionsData = [...versionesData];
+
+const manufacturerList = Array.from(new Set(versionesData.map(version => version.manufacturer.toUpperCase()))).sort();
+const getVersionList = () => currentVersionsData.map(version => version.name.toUpperCase()).sort();
+const getModelList = () => Array.from(new Set(currentVersionsData.map(version => version.model.toUpperCase()))).sort();
+
+const versionModelNames = getVersionList();
+const manufacturers = new Set(versionesData.map(version => version.manufacturer.toUpperCase()));
+const models = getModelList();
+
 searchByPartNumberCheckbox.addEventListener('change', () => {
 	modelListElement.classList.toggle('inactive');
 	versionModelListElement.classList.toggle('inactive');
@@ -21,12 +35,10 @@ searchByPartNumberCheckbox.addEventListener('change', () => {
 	if (!searchByPartNumberCheckbox.checked) {
 		searchInput.setAttribute('placeholder', '');
 	}
-	createOption(modelNames, modelListElement, 'MODELO');
+	createOptions(modelNames, modelListElement, 'MODELO');
 });
 
 versionesData.map(item => (item.name = item.name.toUpperCase()));
-
-let currentSpareParts;
 
 modelListElement.addEventListener('change', e => {
 	const optionValue = modelListElement.options[modelListElement.selectedIndex].text;
@@ -177,36 +189,50 @@ function createSparePartCard(partNumber, partName, repairComponent, remark, comp
 	articleElement.append(tableElement);
 	sparePartsContainer.append(articleElement);
 }
-const versionModelNames = versionesData.map(model => model.name.toUpperCase());
-const manufacturers = new Set(versionesData.map(version => version.manufacturer.toUpperCase()));
-const models = new Set(versionesData.map(version => version.model.toUpperCase()));
-const orderedManufacturers = Array.from(manufacturers).sort();
 
-function createOption(optionArray, node, listName) {
+function createOptions(optionList, node, listName) {
+	listName.toUpperCase();
 	node.innerText = '';
 	const optionElement = document.createElement('option');
 	optionElement.value = listName.toLowerCase();
 	optionElement.innerText = listName;
 	node.append(optionElement);
-	optionArray.forEach(item => {
-		if (item != 'NO MANUFACTURER') {
-			const optionElement = document.createElement('option');
-			optionElement.value = item.toLowerCase;
-			optionElement.innerText = item;
-			node.append(optionElement);
-		}
-	});
+
+	if (listName === 'FABRICANTE') {
+		optionList
+			.map(option => {
+				if (option != 'NO MANUFACTURER') return option;
+			})
+			.forEach(option => {
+				const optionElement = document.createElement('option');
+				optionElement.value = option.toLowerCase;
+				optionElement.innerText = option;
+				node.append(optionElement);
+			});
+	}
+	if (listName === 'MODELO') {
+		optionList
+			.map(option => {
+				if (option != 'NO MODEL') return option;
+			})
+			.forEach(option => {
+				const optionElement = document.createElement('option');
+				optionElement.value = option.toLowerCase;
+				optionElement.innerText = option;
+				node.append(optionElement);
+			});
+	}
 }
 
 function addVersionModelList(option) {
 	option.toUpperCase();
 	const versionModelFound = Array.from(new Set(versionesData.filter(version => version.model.toUpperCase() == option.toUpperCase()).map(version => version.name))).sort();
-	createOption(versionModelFound, versionModelListElement, 'VERSIÓN');
+	createOptions(versionModelFound, versionModelListElement, 'VERSIÓN');
 }
 function addModelList(option) {
 	const foundModels = Array.from(new Set(versionesData.filter(version => version.manufacturer.toUpperCase() == option.toUpperCase()).map(version => version.model))).sort();
 	console.log(foundModels);
-	createOption(foundModels, modelListElement, 'MODELO');
+	createOptions(foundModels, modelListElement, 'MODELO');
 }
 
 let spareParts = [];
@@ -335,29 +361,69 @@ function normalizeString(string) {
 		.toUpperCase();
 }
 
-function findManufacturerSpareParts(manufacturer) {
-	const nManufacturer = normalizeString(manufacturer);
-
-	const fManufaturer = versionesData.filter(version => normalizeString(version.manufacturer) == nManufacturer);
-
-	let spareParts = [];
-
-	currentSpareParts = fManufaturer.forEach(version => {
-		const sparePartsArray = version.spareParts;
-		sparePartsArray.forEach(singleSP => {
-			const foundSparePart = repuestosData.find(sp => {
-				return sp.id == singleSP;
+function findSparePartsByCategory(category, value) {
+	const nCategory = normalizeString(category);
+	const nValue = normalizeString(value);
+	const spareParts = [];
+	let filteredVersions;
+	function fillSparePartsArray() {
+		filteredVersions.forEach(version => {
+			const sparePartsArray = version.spareParts;
+			sparePartsArray.forEach(singleSP => {
+				const foundSparePart = repuestosData.find(sp => {
+					return sp.id == singleSP;
+				});
+				const isAlreadyInSpareParts = spareParts.find(item => item.id == foundSparePart.id);
+				if (!isAlreadyInSpareParts) {
+					spareParts.push(foundSparePart);
+				}
 			});
-			const isAlreadyInSpareParts = spareParts.find(item => item.id == foundSparePart.id);
-			if (!isAlreadyInSpareParts) {
-				spareParts.push(foundSparePart);
-			}
 		});
-	});
+	}
+
+	if (nCategory === 'FABRICANTE') {
+		filteredVersions = versionesData.filter(version => normalizeString(version.manufacturer) == nValue);
+		currentVersionsData = [...filteredVersions];
+		fillSparePartsArray();
+	}
+	if (nCategory === 'MODELO') {
+		filteredVersions = currentSpareParts.filter(version => normalizeString(version.model) == nValue);
+		currentVersionsData = [...filteredVersions];
+		fillSparePartsArray();
+	}
+	if (nCategory === 'VERSION') {
+		filteredVersions = currentSpareParts.filter(version => normalizeString(version.version) == nValue);
+		currentVersionsData = [...filteredVersions];
+		fillSparePartsArray();
+	}
 
 	currentSpareParts = [...spareParts];
 	displaySpareParts(currentSpareParts);
 }
+// function findManufacturerSpareParts(manufacturer) {
+// 	const nManufacturer = normalizeString(manufacturer);
+// 	console.log(versionesData);
+
+// 	const fManufaturer = versionesData.filter(version => normalizeString(version.manufacturer) == nManufacturer);
+
+// 	let spareParts = [];
+
+// 	currentSpareParts = fManufaturer.forEach(version => {
+// 		const sparePartsArray = version.spareParts;
+// 		sparePartsArray.forEach(singleSP => {
+// 			const foundSparePart = repuestosData.find(sp => {
+// 				return sp.id == singleSP;
+// 			});
+// 			const isAlreadyInSpareParts = spareParts.find(item => item.id == foundSparePart.id);
+// 			if (!isAlreadyInSpareParts) {
+// 				spareParts.push(foundSparePart);
+// 			}
+// 		});
+// 	});
+
+// 	currentSpareParts = [...spareParts];
+// 	displaySpareParts(currentSpareParts);
+// }
 
 function filterSPByPartName(string) {
 	const nString = normalizeString(string);
@@ -369,7 +435,8 @@ function filterSPByPartName(string) {
 	displaySpareParts(currentSpareParts);
 }
 
-findManufacturerSpareParts('pax');
+// findManufacturerSpareParts('pax');
+findSparePartsByCategory('FABRICANTE', 'PAX');
 filterSPByPartName('pr');
 
 function displaySpareParts(data) {
@@ -398,8 +465,8 @@ function getModels(modelNames) {
 	const orderedModelNames = theModelNames.sort();
 	return orderedModelNames;
 }
-const modelNames = getModels(versionModelNames);
-createOption(manufacturers, manufacturerListElement, 'FABRICANTE');
+console.log(manufacturerList);
+createOptions(manufacturerList, manufacturerListElement, 'FABRICANTE');
 
 // displaySpareParts(repuestosData);
 
