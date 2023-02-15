@@ -92,14 +92,16 @@ body {
 	display: flex;
 	flex-direction: column;
 }
+#manufacturer-list,
 #model-list,
-#version-model-list,
+#version-list,
 #search-input {
 	border: none;
 	height: 30px;
 }
+#manufacturer-list:focus-visible,
 #model-list:focus-visible,
-#version-model-list:focus-visible,
+#version-list:focus-visible,
 #search-input:focus-visible {
 	outline-color: #c7057f;
 }
@@ -249,7 +251,7 @@ body {
 		gap: 10px;
 	}
 	#model-list,
-	#version-model-list,
+	#version-list,
 	#search-input {
 		flex-grow: 1;
 	}

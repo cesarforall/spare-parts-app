@@ -1,6 +1,6 @@
 const sparePartsContainer = document.querySelector('.spare-parts-container');
 const manufacturerListElement = document.querySelector('.manufacturer-list');
-const versionListElement = document.querySelector('.version-model-list');
+const versionListElement = document.querySelector('.version-list');
 const modelListElement = document.querySelector('.model-list');
 const searchInput = document.getElementById('search-input');
 const searchByPartNumberCheckbox = document.getElementById('search-by-part-number-checkbox');
@@ -21,19 +21,15 @@ const manufacturers = new Set(versionesData.map(version => version.manufacturer.
 const models = getModelList();
 
 searchByPartNumberCheckbox.addEventListener('change', () => {
+	cleanInput();
+	manufacturerListElement.classList.toggle('inactive');
 	modelListElement.classList.toggle('inactive');
 	versionListElement.classList.toggle('inactive');
-	addVersionModelList('');
-	partsLengthElement.innerText = '';
-	sparePartsContainer.innerHTML = '';
-	searchInput.value = '';
-	if (searchByPartNumberCheckbox.checked) {
-		searchInput.setAttribute('placeholder', 'buscar part number');
-	}
-	if (!searchByPartNumberCheckbox.checked) {
-		searchInput.setAttribute('placeholder', '');
-	}
-	createOptions(modelNames, modelListElement, 'MODELO');
+	currentSpareParts = [...repuestosData];
+	createOptions(manufacturerList, manufacturerListElement, 'FABRICANTE');
+	createOptions([], modelListElement, 'MODELO');
+	createOptions([], versionListElement, 'VERSIÓN');
+	displaySpareParts(repuestosData);
 });
 
 versionesData.map(item => (item.name = item.name.toUpperCase()));
@@ -97,10 +93,17 @@ versionListElement.addEventListener('change', e => {
 });
 
 searchInput.addEventListener('keyup', e => {
+	const checkBoxIsChecked = searchByPartNumberCheckbox.checked;
 	const searchString = e.target.value;
-	const filtered = filterSPByPartName(searchString);
-
-	displaySpareParts(filtered);
+	let filtered;
+	if (!checkBoxIsChecked) {
+		filtered = filterSPByPartName(searchString);
+		displaySpareParts(filtered);
+	}
+	if (checkBoxIsChecked) {
+		filtered = filterSPByPartNumber(searchString);
+		displaySpareParts(filtered);
+	}
 });
 
 function createSparePartCard(partNumber, partName, repairComponent, remark, compatibleDevicesArray) {
@@ -413,6 +416,17 @@ function filterSPByPartName(string) {
 	// console.log(nString);
 	// console.log(currentSpareParts);
 	const filtered = currentSpareParts.filter(sp => normalizeString(sp['Parts name']).includes(nString));
+	// console.log(filtered);
+	// currentSpareParts = [...filtered];
+	// displaySpareParts(currentSpareParts);
+	return filtered;
+}
+function filterSPByPartNumber(string) {
+	const nString = normalizeString(string);
+	// console.log(nString);
+	// console.log(currentSpareParts);
+	console.log(currentSpareParts);
+	const filtered = currentSpareParts.filter(sp => normalizeString(sp['Part number']).includes(nString));
 	// console.log(filtered);
 	// currentSpareParts = [...filtered];
 	// displaySpareParts(currentSpareParts);
