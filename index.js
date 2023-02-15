@@ -1,14 +1,12 @@
 const sparePartsContainer = document.querySelector('.spare-parts-container');
 const manufacturerListElement = document.querySelector('.manufacturer-list');
-const versionModelListElement = document.querySelector('.version-model-list');
+const versionListElement = document.querySelector('.version-model-list');
 const modelListElement = document.querySelector('.model-list');
 const searchInput = document.getElementById('search-input');
 const searchByPartNumberCheckbox = document.getElementById('search-by-part-number-checkbox');
 const lastPageElement = document.getElementById('last-page');
 const lastDataElement = document.getElementById('last-data');
 const partsLengthElement = document.querySelector('.parts-length');
-
-// const modelNames = getModels(versionModelNames);
 
 // const orderedManufacturers = Array.from(manufacturers).sort();
 let currentSpareParts = [...repuestosData];
@@ -18,13 +16,13 @@ const manufacturerList = Array.from(new Set(versionesData.map(version => version
 const getVersionList = () => currentVersionsData.map(version => version.name.toUpperCase()).sort();
 const getModelList = () => Array.from(new Set(currentVersionsData.map(version => version.model.toUpperCase()))).sort();
 
-const versionModelNames = getVersionList();
+const versions = getVersionList();
 const manufacturers = new Set(versionesData.map(version => version.manufacturer.toUpperCase()));
 const models = getModelList();
 
 searchByPartNumberCheckbox.addEventListener('change', () => {
 	modelListElement.classList.toggle('inactive');
-	versionModelListElement.classList.toggle('inactive');
+	versionListElement.classList.toggle('inactive');
 	addVersionModelList('');
 	partsLengthElement.innerText = '';
 	sparePartsContainer.innerHTML = '';
@@ -40,92 +38,69 @@ searchByPartNumberCheckbox.addEventListener('change', () => {
 
 versionesData.map(item => (item.name = item.name.toUpperCase()));
 
-function cleanHtml() {
-	partsLengthElement.innerText = '';
-	sparePartsContainer.innerHTML = '';
+function cleanInput() {
+	// partsLengthElement.innerText = '';
+	// sparePartsContainer.innerHTML = '';
 	searchInput.value = '';
 	searchInput.setAttribute('placeholder', '');
 }
 
 manufacturerListElement.addEventListener('change', e => {
-	const optionValue = manufacturerListElement.options[manufacturerListElement.selectedIndex].text;
-	console.log(optionValue);
-	if (optionValue === 'FABRICANTE') {
+	const manufacturerValue = manufacturerListElement.options[manufacturerListElement.selectedIndex].text;
+	cleanInput();
+	if (manufacturerValue === 'FABRICANTE') {
 		currentSpareParts = [...repuestosData];
+		createOptions(manufacturerList, manufacturerListElement, 'FABRICANTE');
 		createOptions([], modelListElement, 'MODELO');
-		createOptions([], versionModelListElement, 'VERSIÓN');
-		displaySpareParts(currentSpareParts);
+		createOptions([], versionListElement, 'VERSIÓN');
+		displaySpareParts(repuestosData);
 	}
-	if (optionValue != 'FABRICANTE') {
-		findSparePartsByCategory('FABRICANTE', optionValue);
-		const modelList = getModelList(optionValue);
+	if (manufacturerValue != 'FABRICANTE') {
+		findSparePartsByCategory('FABRICANTE', manufacturerValue);
+		const modelList = getModelList(manufacturerValue);
 		createOptions(modelList, modelListElement, 'MODELO');
+		createOptions([], versionListElement, 'VERSIÓN');
 	}
 });
 
 modelListElement.addEventListener('change', e => {
-	const optionValue = modelListElement.options[modelListElement.selectedIndex].text;
-	const fatherValue = manufacturerListElement.options[manufacturerListElement.selectedIndex].text;
-	console.log(fatherValue);
-	if (optionValue === 'MODELO') {
+	cleanInput();
+	const manufacturerValue = manufacturerListElement.options[manufacturerListElement.selectedIndex].text;
+	const modelValue = modelListElement.options[modelListElement.selectedIndex].text;
+	if (modelValue === 'MODELO') {
 		currentSpareParts = [...repuestosData];
-		createOptions([], versionModelListElement, 'VERSIÓN');
-		findSparePartsByCategory('FABRICANTE', fatherValue);
+		findSparePartsByCategory('FABRICANTE', manufacturerValue);
+		createOptions([], versionListElement, 'VERSIÓN');
 	}
-	if (optionValue != 'MODELO') {
+	if (modelValue != 'MODELO') {
 		currentSpareParts = [...repuestosData];
-		findSparePartsByCategory('FABRICANTE', fatherValue);
-		findSparePartsByCategory('MODELO', optionValue);
-		const versionList = getVersionList(optionValue);
-		createOptions(versionList, versionModelListElement, 'VERSIÓN');
+		findSparePartsByCategory('FABRICANTE', manufacturerValue);
+		findSparePartsByCategory('MODELO', modelValue);
+		const versionList = getVersionList(modelValue);
+		createOptions(versionList, versionListElement, 'VERSIÓN');
 	}
 });
 
-versionModelListElement.addEventListener('change', e => {
-	const optionValue = versionModelListElement.options[versionModelListElement.selectedIndex].text;
-	const fatherValue = modelListElement.options[modelListElement.selectedIndex].text;
-	const grandFatherValue = manufacturerListElement.options[manufacturerListElement.selectedIndex].text;
-	if (optionValue === 'VERSIÓN') {
-		currentSpareParts = [...repuestosData];
-		findSparePartsByCategory('FABRICANTE', grandFatherValue);
-		findSparePartsByCategory('MODELO', fatherValue);
+versionListElement.addEventListener('change', e => {
+	cleanInput();
+	const manufacturerValue = manufacturerListElement.options[manufacturerListElement.selectedIndex].text;
+	const modelValue = modelListElement.options[modelListElement.selectedIndex].text;
+	const versionValue = versionListElement.options[versionListElement.selectedIndex].text;
+
+	if (versionValue === 'VERSIÓN') {
+		findSparePartsByCategory('FABRICANTE', manufacturerValue);
+		findSparePartsByCategory('MODELO', modelValue);
 	}
-	if (optionValue != 'VERSIÓN') {
-		currentSpareParts = [...repuestosData];
-		findSparePartsByCategory('FABRICANTE', grandFatherValue);
-		findSparePartsByCategory('MODELO', fatherValue);
-		findSparePartsByCategory('VERSIÓN', optionValue);
+	if (versionValue != 'VERSIÓN') {
+		findSparePartsByCategory('version', versionValue);
 	}
 });
 
 searchInput.addEventListener('keyup', e => {
-	const word = e.target.value;
-	const optionValueManufacturer = manufacturerListElement.options[manufacturerListElement.selectedIndex].text;
-	const optionValueModel = modelListElement.options[modelListElement.selectedIndex].text;
-	const optionValueVersion = versionModelListElement.options[versionModelListElement.selectedIndex].text;
+	const searchString = e.target.value;
+	const filtered = filterSPByPartName(searchString);
 
-	if (optionValueManufacturer == 'FABRICANTE' && optionValueModel == 'MODELO' && optionValueVersion == 'VERSIÓN' && searchByPartNumberCheckbox.checked) {
-		if (word != '') {
-			displaySpareParts(versionesData);
-		} else {
-			currentSpareParts = findSparePartsFromFull(optionValue);
-		}
-	}
-	if (optionValueManufacturer == 'FABRICANTE' && optionValueModel == 'MODELO' && optionValueVersion == 'VERSIÓN') {
-		if (word != '') {
-			displaySpareParts(versionesData);
-		} else {
-			findByInput(versionesData, word);
-		}
-	}
-	if (optionValueModel != 'MODELO' && optionValueVersion == 'VERSIÓN') {
-		findByInput(currentSpareParts, word);
-	}
-	if (optionValueModel == 'MODELO' && optionValueVersion == 'VERSIÓN' && !searchByPartNumberCheckbox.checked) {
-	}
-	if (optionValueModel != 'MODELO' && optionValueVersion != 'VERSIÓN' && !searchByPartNumberCheckbox.checked) {
-		findByInput(spareParts, word);
-	}
+	displaySpareParts(filtered);
 });
 
 function createSparePartCard(partNumber, partName, repairComponent, remark, compatibleDevicesArray) {
@@ -234,7 +209,7 @@ function addVersionModelList(option) {
 	option.toUpperCase();
 	const versionModelFound = Array.from(new Set(currentVersionsData.filter(version => version.model.toUpperCase() == option.toUpperCase()).map(version => version.name))).sort();
 	console.log(versionModelFound);
-	createOptions(versionModelFound, versionModelListElement, 'VERSIÓN');
+	createOptions(versionModelFound, versionListElement, 'VERSIÓN');
 }
 function addModelList(option) {
 	const foundModels = Array.from(new Set(currentVersionsData.filter(version => version.manufacturer.toUpperCase() == option.toUpperCase()).map(version => version.model))).sort();
@@ -399,8 +374,9 @@ function findSparePartsByCategory(category, value) {
 		fillSparePartsArray();
 	}
 	if (nCategory === 'VERSION') {
-		filteredVersions = currentVersionsData.filter(version => normalizeString(version.version) == nValue);
-		currentVersionsData = [...filteredVersions];
+		console.log(currentVersionsData);
+		filteredVersions = currentVersionsData.filter(version => normalizeString(version.name) == nValue);
+		// currentVersionsData = [...filteredVersions];
 		fillSparePartsArray();
 	}
 
@@ -434,17 +410,18 @@ function findSparePartsByCategory(category, value) {
 
 function filterSPByPartName(string) {
 	const nString = normalizeString(string);
-	console.log(nString);
-	console.log(currentSpareParts);
+	// console.log(nString);
+	// console.log(currentSpareParts);
 	const filtered = currentSpareParts.filter(sp => normalizeString(sp['Parts name']).includes(nString));
-	console.log(filtered);
-	currentSpareParts = [...filtered];
-	displaySpareParts(currentSpareParts);
+	// console.log(filtered);
+	// currentSpareParts = [...filtered];
+	// displaySpareParts(currentSpareParts);
+	return filtered;
 }
 
 // findManufacturerSpareParts('pax');
-findSparePartsByCategory('FABRICANTE', 'PAX');
-filterSPByPartName('pr');
+// findSparePartsByCategory('FABRICANTE', 'PAX');
+// filterSPByPartName('pr');
 
 function displaySpareParts(data) {
 	const partsLength = data.length;
@@ -472,10 +449,9 @@ function getModels(modelNames) {
 	const orderedModelNames = theModelNames.sort();
 	return orderedModelNames;
 }
-console.log(manufacturerList);
-createOptions(manufacturerList, manufacturerListElement, 'FABRICANTE');
 
-// displaySpareParts(repuestosData);
+createOptions(manufacturerList, manufacturerListElement, 'FABRICANTE');
+displaySpareParts(repuestosData);
 
 // Credits
 const atElement = document.getElementById('at-element');
