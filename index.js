@@ -106,6 +106,32 @@ searchInput.addEventListener('keyup', e => {
 	}
 });
 
+function testImage(url) {
+
+    // Define the promise
+    const imgPromise = new Promise(function imgPromise(resolve, reject) {
+
+        // Create the image
+        const imgElement = new Image();
+
+        // When image is loaded, resolve the promise
+        imgElement.addEventListener('load', function imgOnLoad() {
+            resolve(this);
+        });
+
+        // When there's an error during load, reject the promise
+        imgElement.addEventListener('error', function imgOnError() {
+            reject();
+        })
+
+        // Assign URL
+        imgElement.src = url;
+
+    });
+
+    return imgPromise;
+}
+
 function createSparePartCard(partNumber, partName, repairComponent, remark, compatibleDevicesArray) {
 	const compatibleDevices = [];
 	if (compatibleDevicesArray) {
@@ -128,7 +154,21 @@ function createSparePartCard(partNumber, partName, repairComponent, remark, comp
 
 	const imgElement = document.createElement('img');
 	imgElement.classList.add('card-img');
-	imgElement.setAttribute('src', `../../data/img-repuestos-pax/${partNumber}.jpg` || './img/tvp.png');
+
+
+
+	testImage(`../../data/img-repuestos-pax/${partNumber}.jpg`).then(
+
+    function fulfilled() {
+		imgElement.setAttribute('src', `../../data/img-repuestos-pax/${partNumber}.jpg`);
+    },
+	
+    function rejected() {
+		imgElement.setAttribute('src', `../../data/img-repuestos-pax/anuncio.jpg`);
+    }
+
+);
+
 	imgElement.setAttribute('alt', 'spare part');
 
 	const tableElement = document.createElement('table');
