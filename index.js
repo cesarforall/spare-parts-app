@@ -20,17 +20,17 @@ const versions = getVersionList();
 const manufacturers = new Set(versionesData.map(version => version.manufacturer.toUpperCase()));
 const models = getModelList();
 
-searchByPartNumberCheckbox.addEventListener('change', () => {
-	cleanInput();
-	manufacturerListElement.classList.toggle('inactive');
-	modelListElement.classList.toggle('inactive');
-	versionListElement.classList.toggle('inactive');
-	currentSpareParts = [...repuestosData];
-	createOptions(manufacturerList, manufacturerListElement, 'FABRICANTE');
-	createOptions([], modelListElement, 'MODELO');
-	createOptions([], versionListElement, 'VERSIÓN');
-	displaySpareParts(repuestosData);
-});
+// searchByPartNumberCheckbox.addEventListener('change', () => {
+// 	cleanInput();
+// 	manufacturerListElement.classList.toggle('inactive');
+// 	modelListElement.classList.toggle('inactive');
+// 	versionListElement.classList.toggle('inactive');
+// 	currentSpareParts = [...repuestosData];
+// 	createOptions(manufacturerList, manufacturerListElement, 'FABRICANTE');
+// 	createOptions([], modelListElement, 'MODELO');
+// 	createOptions([], versionListElement, 'VERSIÓN');
+// 	displaySpareParts(repuestosData);
+// });
 
 versionesData.map(item => (item.name = item.name.toUpperCase()));
 
@@ -93,43 +93,42 @@ versionListElement.addEventListener('change', e => {
 });
 
 searchInput.addEventListener('keyup', e => {
-	const checkBoxIsChecked = searchByPartNumberCheckbox.checked;
+	// const checkBoxIsChecked = searchByPartNumberCheckbox.checked;
 	const searchString = e.target.value;
 	let filtered;
-	if (!checkBoxIsChecked) {
-		filtered = filterSPByPartName(searchString);
-		displaySpareParts(filtered);
-	}
-	if (checkBoxIsChecked) {
-		filtered = filterSPByPartNumber(searchString);
-		displaySpareParts(filtered);
-	}
+	// if (!checkBoxIsChecked) {
+	// 	filtered = filterSPByPartName(searchString);
+	// 	displaySpareParts(filtered);
+	// }
+	// if (checkBoxIsChecked) {
+	// 	filtered = filterAll(searchString);
+	// 	displaySpareParts(filtered);
+	// }
+	filtered = filterAll(searchString);
+	displaySpareParts(filtered);
 });
 
 function testImage(url) {
+	// Define the promise
+	const imgPromise = new Promise(function imgPromise(resolve, reject) {
+		// Create the image
+		const imgElement = new Image();
 
-    // Define the promise
-    const imgPromise = new Promise(function imgPromise(resolve, reject) {
+		// When image is loaded, resolve the promise
+		imgElement.addEventListener('load', function imgOnLoad() {
+			resolve(this);
+		});
 
-        // Create the image
-        const imgElement = new Image();
+		// When there's an error during load, reject the promise
+		imgElement.addEventListener('error', function imgOnError() {
+			reject();
+		});
 
-        // When image is loaded, resolve the promise
-        imgElement.addEventListener('load', function imgOnLoad() {
-            resolve(this);
-        });
+		// Assign URL
+		imgElement.src = url;
+	});
 
-        // When there's an error during load, reject the promise
-        imgElement.addEventListener('error', function imgOnError() {
-            reject();
-        })
-
-        // Assign URL
-        imgElement.src = url;
-
-    });
-
-    return imgPromise;
+	return imgPromise;
 }
 
 function createSparePartCard(partNumber, partName, repairComponent, remark, compatibleDevicesArray) {
@@ -155,19 +154,15 @@ function createSparePartCard(partNumber, partName, repairComponent, remark, comp
 	const imgElement = document.createElement('img');
 	imgElement.classList.add('card-img');
 
-
-
 	testImage(`../../data/img-repuestos-pax/${partNumber}.jpg`).then(
+		function fulfilled() {
+			imgElement.setAttribute('src', `../../data/img-repuestos-pax/${partNumber}.jpg`);
+		},
 
-    function fulfilled() {
-		imgElement.setAttribute('src', `../../data/img-repuestos-pax/${partNumber}.jpg`);
-    },
-	
-    function rejected() {
-		imgElement.setAttribute('src', `../../data/img-repuestos-pax/anuncio.jpg`);
-    }
-
-);
+		function rejected() {
+			imgElement.setAttribute('src', `../../data/img-repuestos-pax/anuncio.jpg`);
+		},
+	);
 
 	imgElement.setAttribute('alt', 'spare part');
 
@@ -456,6 +451,16 @@ function filterSPByPartName(string) {
 	// console.log(nString);
 	// console.log(currentSpareParts);
 	const filtered = currentSpareParts.filter(sp => normalizeString(sp['Parts name']).includes(nString));
+	// console.log(filtered);
+	// currentSpareParts = [...filtered];
+	// displaySpareParts(currentSpareParts);
+	return filtered;
+}
+function filterAll(string) {
+	const nString = normalizeString(string);
+	// console.log(nString);
+	// console.log(currentSpareParts);
+	const filtered = currentSpareParts.filter(sp => normalizeString(sp['Key words']).includes(nString));
 	// console.log(filtered);
 	// currentSpareParts = [...filtered];
 	// displaySpareParts(currentSpareParts);

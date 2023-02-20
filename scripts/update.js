@@ -145,7 +145,7 @@ function transformDataForTheProject(wb) {
 			}
 		});
 
-		const newSparePartObject = { id: rowId.toString(), 'Part number': partNumber.toString().trimStart().trimEnd(), 'Parts name': partsName || '', Remark: remark || '', 'Repair component': repairComponent || '', 'Compatible device': compatibleDevicesIdList || '' };
+		const newSparePartObject = { id: rowId.toString(), 'Part number': partNumber.toString().trimStart().trimEnd(), 'Parts name': partsName || '', Remark: remark || '', 'Repair component': repairComponent || '', 'Compatible device': compatibleDevicesIdList || '', 'Key words': [partNumber.toString().trimStart().trimEnd(), partsName, original, remark].join(' ') };
 		fullSparePartsWithVersions.push(newSparePartObject);
 	});
 
@@ -222,12 +222,12 @@ atElement.addEventListener('click', () => {
 });
 
 // Last updates
-if (versionesSecureNum == repuestosSecureNum) {
-	lastPageElement.innerText = `Última actualización de página: ${pageLastModifiedDate}`;
-	lastDataElement.innerText = `Última actualización de datos: ${excelLastModifiedDate}`;
-} else {
-	lastPageElement.classList.add('red');
-	lastDataElement.classList.add('red');
-	lastPageElement.innerText = `Error en la carga de datos!`;
-	lastDataElement.innerText = `Los archivos de datos no son de la misma descarga`;
-}
+// if (versionesSecureNum == repuestosSecureNum) {
+// 	lastPageElement.innerText = `Última actualización de página: ${pageLastModifiedDate}`;
+// 	lastDataElement.innerText = `Última actualización de datos: ${excelLastModifiedDate}`;
+// } else {
+// 	lastPageElement.classList.add('red');
+// 	lastDataElement.classList.add('red');
+// 	lastPageElement.innerText = `Error en la carga de datos!`;
+// 	lastDataElement.innerText = `Los archivos de datos no son de la misma descarga`;
+// }
