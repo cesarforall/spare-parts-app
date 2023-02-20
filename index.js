@@ -8,7 +8,12 @@ const lastPageElement = document.getElementById('last-page');
 const lastDataElement = document.getElementById('last-data');
 const partsLengthElement = document.querySelector('.parts-length');
 
-// const orderedManufacturers = Array.from(manufacturers).sort();
+// Last updates
+function fillLastDate() {
+	lastPageElement.innerText = `Última actualización de página: ${pageLastModifiedDate}`;
+	lastDataElement.innerText = `Última actualización de datos: ${excelLastModifiedDate}`;
+}
+
 let currentSpareParts = [...repuestosData];
 let currentVersionsData = [...versionesData];
 
@@ -20,23 +25,9 @@ const versions = getVersionList();
 const manufacturers = new Set(versionesData.map(version => version.manufacturer.toUpperCase()));
 const models = getModelList();
 
-// searchByPartNumberCheckbox.addEventListener('change', () => {
-// 	cleanInput();
-// 	manufacturerListElement.classList.toggle('inactive');
-// 	modelListElement.classList.toggle('inactive');
-// 	versionListElement.classList.toggle('inactive');
-// 	currentSpareParts = [...repuestosData];
-// 	createOptions(manufacturerList, manufacturerListElement, 'FABRICANTE');
-// 	createOptions([], modelListElement, 'MODELO');
-// 	createOptions([], versionListElement, 'VERSIÓN');
-// 	displaySpareParts(repuestosData);
-// });
-
 versionesData.map(item => (item.name = item.name.toUpperCase()));
 
 function cleanInput() {
-	// partsLengthElement.innerText = '';
-	// sparePartsContainer.innerHTML = '';
 	searchInput.value = '';
 	searchInput.setAttribute('placeholder', '');
 }
@@ -93,43 +84,11 @@ versionListElement.addEventListener('change', e => {
 });
 
 searchInput.addEventListener('keyup', e => {
-	// const checkBoxIsChecked = searchByPartNumberCheckbox.checked;
 	const searchString = e.target.value;
 	let filtered;
-	// if (!checkBoxIsChecked) {
-	// 	filtered = filterSPByPartName(searchString);
-	// 	displaySpareParts(filtered);
-	// }
-	// if (checkBoxIsChecked) {
-	// 	filtered = filterAll(searchString);
-	// 	displaySpareParts(filtered);
-	// }
 	filtered = filterAll(searchString);
 	displaySpareParts(filtered);
 });
-
-function testImage(url) {
-	// Define the promise
-	const imgPromise = new Promise(function imgPromise(resolve, reject) {
-		// Create the image
-		const imgElement = new Image();
-
-		// When image is loaded, resolve the promise
-		imgElement.addEventListener('load', function imgOnLoad() {
-			resolve(this);
-		});
-
-		// When there's an error during load, reject the promise
-		imgElement.addEventListener('error', function imgOnError() {
-			reject();
-		});
-
-		// Assign URL
-		imgElement.src = url;
-	});
-
-	return imgPromise;
-}
 
 function createSparePartCard(partNumber, partName, repairComponent, remark, compatibleDevicesArray) {
 	const compatibleDevices = [];
@@ -423,75 +382,32 @@ function findSparePartsByCategory(category, value) {
 	if (nCategory === 'VERSION') {
 		console.log(currentVersionsData);
 		filteredVersions = currentVersionsData.filter(version => normalizeString(version.name) == nValue);
-		// currentVersionsData = [...filteredVersions];
 		fillSparePartsArray();
 	}
 
 	currentSpareParts = [...spareParts];
 	displaySpareParts(currentSpareParts);
 }
-// function findManufacturerSpareParts(manufacturer) {
-// 	const nManufacturer = normalizeString(manufacturer);
-// 	console.log(versionesData);
-
-// 	const fManufaturer = versionesData.filter(version => normalizeString(version.manufacturer) == nManufacturer);
-
-// 	let spareParts = [];
-
-// 	currentSpareParts = fManufaturer.forEach(version => {
-// 		const sparePartsArray = version.spareParts;
-// 		sparePartsArray.forEach(singleSP => {
-// 			const foundSparePart = repuestosData.find(sp => {
-// 				return sp.id == singleSP;
-// 			});
-// 			const isAlreadyInSpareParts = spareParts.find(item => item.id == foundSparePart.id);
-// 			if (!isAlreadyInSpareParts) {
-// 				spareParts.push(foundSparePart);
-// 			}
-// 		});
-// 	});
-
-// 	currentSpareParts = [...spareParts];
-// 	displaySpareParts(currentSpareParts);
-// }
 
 function filterSPByPartName(string) {
 	const nString = normalizeString(string);
-	// console.log(nString);
-	// console.log(currentSpareParts);
 	const filtered = currentSpareParts.filter(sp => normalizeString(sp['Parts name']).includes(nString));
-	// console.log(filtered);
-	// currentSpareParts = [...filtered];
-	// displaySpareParts(currentSpareParts);
 	return filtered;
 }
 function filterAll(string) {
 	const nString = normalizeString(string);
-	// console.log(nString);
-	// console.log(currentSpareParts);
 	const filtered = currentSpareParts.filter(sp => normalizeString(sp['Key words']).includes(nString));
-	// console.log(filtered);
-	// currentSpareParts = [...filtered];
-	// displaySpareParts(currentSpareParts);
 	return filtered;
 }
 function filterSPByPartNumber(string) {
 	const nString = normalizeString(string);
-	// console.log(nString);
-	// console.log(currentSpareParts);
 	console.log(currentSpareParts);
 	const filtered = currentSpareParts.filter(sp => normalizeString(sp['Part number']).includes(nString));
-	// console.log(filtered);
-	// currentSpareParts = [...filtered];
-	// displaySpareParts(currentSpareParts);
 	return filtered;
 }
 
-// findManufacturerSpareParts('pax');
-// findSparePartsByCategory('FABRICANTE', 'PAX');
-// filterSPByPartName('pr');
-
 function displaySpareParts(data) {
+	sparePartsContainer.innerText = '';
 	const partsLength = data.length;
 	partsLengthElement.innerText = `${partsLength} repuestos compatibles`;
 
@@ -567,6 +483,4 @@ atElement.addEventListener('click', () => {
 	showElement([creditsLinkElement, creditsElement]);
 });
 
-// Last updates
-lastPageElement.innerText = `Última actualización de página: ${pageLastModifiedDate}`;
-lastDataElement.innerText = `Última actualización de datos: ${excelLastModifiedDate}`;
+fillLastDate();
