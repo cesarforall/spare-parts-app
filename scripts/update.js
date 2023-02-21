@@ -1,11 +1,45 @@
-const updateInputElement = document.getElementById('update-input');
+// const updateInputElement = document.getElementById('update-input');
 // const updateButtonElement = document.getElementById('update-button');
-const dataContainerElement = document.getElementById('updated-data');
+// const dataContainerElement = document.getElementById('updated-data');
 const lastPageElement = document.getElementById('last-page');
 const lastDataElement = document.getElementById('last-data');
+const mainElement = document.querySelector('main');
 
-updateInputElement.addEventListener('change', handleFileAsync, false);
 // updateButtonElement.addEventListener('click', createAndDownloadFiles);
+
+function createInputFile() {
+	const sectionInput = document.createElement('section');
+	sectionInput.classList.add('update-section');
+
+	const updateInputElement = document.createElement('input');
+	updateInputElement.id = 'update-input';
+	updateInputElement.setAttribute('type', 'file');
+
+	updateInputElement.addEventListener('change', handleFileAsync, false);
+
+	sectionInput.append(updateInputElement);
+	mainElement.append(sectionInput);
+}
+
+const loginForm = document.querySelector('#login-form');
+const message = document.getElementById('message');
+
+loginForm.addEventListener('submit', function (e) {
+	e.preventDefault(); // prevenir el comportamiento por defecto del formulario
+
+	const username = loginForm.username.value;
+	const password = loginForm.password.value;
+
+	if (password === 'Zelenza*2023') {
+		// Si la contraseña es correcta
+		loginForm.style.display = 'none'; // ocultar el formulario de inicio de sesión
+		message.innerText = ''; // agregar un mensaje de error
+
+		createInputFile();
+	} else {
+		message.innerText = 'Contraseña incorrecta. Inténtalo de nuevo.'; // agregar un mensaje de error
+	}
+});
 
 function createAndDownloadFiles(transformedData, excelLastModifiedDate) {
 	const versionesData = transformedData.versiones;
@@ -14,7 +48,7 @@ function createAndDownloadFiles(transformedData, excelLastModifiedDate) {
 
 	const repuestosDataString = `const repuestosData = ${JSON.stringify(repuestosData)}; const versionesData = ${JSON.stringify(versionesData)}; const excelLastModifiedDate = '${excelLastModifiedDate}'; const pageLastModifiedDate = '${pageLastModifiedDate}';`;
 
-	dataContainerElement.innerText = 'Datos cargados correctamente';
+	// dataContainerElement.innerText = 'Datos cargados correctamente';
 
 	// alert(`Datos cargados!\nSobreescribe:\ndata/repuestos.js`);
 	downloadToFile(repuestosDataString, 'repuestos.js', 'text/plain');

@@ -35,11 +35,29 @@
     </header>
     <div class="separator"></div>
     <main id="main" class="main">
-        <section class="update-section">
+        <div id="login" class="form-container">
+            <form id="login-form" class="box">
+                <div class="field">
+                    <label for="username" class="label">Usuario</label>
+                    <div class="control">
+                        <input id="username" name="username" class="input" type="text" autocomplete="username" placeholder="Usuario">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="password" class="label">Password</label>
+                    <div class="control">
+                        <input id="password" name="password" class="input" type="password" autocomplete="off" placeholder="********">
+                    </div>
+                </div>
+                <button id="login-button" class="button is-zelenza has-text-white">Entrar</button>
+            </form>
+            <p style="display: block; width: 500px; margin: 0 auto;" id="message"></p>
+        </div>
+        <!-- <section class="update-section">
             <input type="file" name="" id="update-input">
-            <!-- <button id="update-button">Actualizar</button> -->
+            <button id="update-button">Actualizar</button>
             <div id="updated-data"></div>
-        </section>
+        </section> -->
     </main>
     <div class="separator"></div>
     <footer class="footer">
