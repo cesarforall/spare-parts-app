@@ -112,7 +112,7 @@ function createSparePartCard(partNumber, partName, repairComponent, remark, comp
 
 	const imgElement = document.createElement('img');
 	imgElement.classList.add('card-img');
-	imgElement.setAttribute('data-src', `../../data/img-repuestos-pax/${partNumber}.jpg`);
+	imgElement.setAttribute('data-src', `../../data/img-repuestos/${partNumber}.jpg`);
 	imgElement.setAttribute('alt', 'spare part');
 
 	const io = new IntersectionObserver((entries, observer) => {
@@ -124,7 +124,7 @@ function createSparePartCard(partNumber, partName, repairComponent, remark, comp
 					imgContainerElement.classList.add('loaded');
 				};
 				img.onerror = () => {
-					img.setAttribute('src', `../../data/img-repuestos-pax/anuncio.jpg`);
+					img.setAttribute('src', `../../data/img-repuestos/anuncio.jpg`);
 					imgContainerElement.classList.add('loaded');
 				};
 				observer.unobserve(img);
